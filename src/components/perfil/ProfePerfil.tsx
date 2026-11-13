@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { EscuelaSecciones, PUBLICO } from "@/components/perfil/EscuelaSecciones";
 
 type Nivel = Database["public"]["Enums"]["nivel_musical"];
 type Dia = Database["public"]["Enums"]["dia_semana"];
 type Modalidad = Database["public"]["Enums"]["modalidad_clase"];
+type Publico = Database["public"]["Enums"]["publico_edad"];
 
 const DIAS: { id: Dia; label: string }[] = [
   { id: "lunes", label: "Lunes" }, { id: "martes", label: "Martes" }, { id: "miercoles", label: "Miércoles" },
@@ -90,7 +92,9 @@ export function ProfePerfil(b: Base) {
     anios_ensenando: String(d?.anios_ensenando ?? ""), precio_hora: d?.precio_hora != null ? String(d.precio_hora) : "",
     estilos_otros: d?.estilos_otros ?? "",
     niveles_alumnos: (d?.niveles_alumnos ?? []) as Nivel[], modalidades: (d?.modalidades ?? []) as Modalidad[],
+    publico: (d?.publico ?? []) as Publico[], es_escuela: d?.es_escuela ?? false,
   });
+  const esc = form.es_escuela;
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setForm({ ...form, [k]: e.target.value });
   const toggleArr = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
@@ -103,6 +107,7 @@ export function ProfePerfil(b: Base) {
         perfil_id: uid, titular: form.titular, metodologia: form.metodologia, experiencia: form.experiencia, formacion: form.formacion,
         anios_ensenando: Number(form.anios_ensenando) || 0, precio_hora: form.precio_hora ? Number(form.precio_hora) : null,
         estilos_otros: form.estilos_otros || null, niveles_alumnos: form.niveles_alumnos, modalidades: form.modalidades, updated_at: now,
+        publico: form.publico, es_escuela: form.es_escuela,
       }),
     ]);
     if (p.error || det.error) { toast.error("No se pudo guardar"); return; }
@@ -192,30 +197,38 @@ export function ProfePerfil(b: Base) {
           {estado === "revision" && <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-card px-3 py-0.5 text-sm font-semibold"><Clock className="h-4 w-4" /> Verificación en revisión</span>}
           {estado === "pendiente" && <span className="rounded-full border-2 border-dashed border-ink px-3 py-0.5 text-sm font-semibold">Sin verificar</span>}
         </div>
-        <h1 className="mt-3 text-4xl font-extrabold">Tu ficha de profe</h1>
+        <h1 className="mt-3 text-4xl font-extrabold">{esc ? "La ficha de tu escuela" : "Tu ficha de profe"}</h1>
         <p className="mt-1 text-muted-foreground">Es lo que verán los alumnos que buscan con quién aprender. Cuanto más clara y completa, más confianza das.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-semibold">Doy clases como:</span>
+          <Chip on={!esc} onClick={() => setForm({ ...form, es_escuela: false })}>Profe particular</Chip>
+          <Chip on={esc} onClick={() => setForm({ ...form, es_escuela: true })}>Escuela o academia</Chip>
+        </div>
       </div>
 
       <form onSubmit={guardar} className="space-y-6">
-        <Section title="Tu presentación" hint="Lo primero que leerá un alumno sobre ti.">
+        <Section title={esc ? "Presentación de la escuela" : "Tu presentación"} hint="Lo primero que leerá un alumno.">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div><Label htmlFor="n">Nombre o nombre de la escuela</Label><Input id="n" className="mt-1" value={form.nombre} onChange={set("nombre")} /></div>
-            <div><Label htmlFor="t">Frase que te define</Label><Input id="t" className="mt-1" placeholder="Batería para adultos que nunca han tocado" value={form.titular} onChange={set("titular")} /></div>
+            <div><Label htmlFor="n">{esc ? "Nombre de la escuela" : "Tu nombre"}</Label><Input id="n" className="mt-1" value={form.nombre} onChange={set("nombre")} /></div>
+            <div><Label htmlFor="t">{esc ? "Frase que os define" : "Frase que te define"}</Label><Input id="t" className="mt-1" placeholder={esc ? "Escuela de música moderna donde se aprende en banda" : "Batería para adultos que nunca han tocado"} value={form.titular} onChange={set("titular")} /></div>
             <div><Label htmlFor="c">Ciudad</Label><Input id="c" className="mt-1" placeholder="Madrid" value={form.ciudad} onChange={set("ciudad")} /></div>
             <div><Label htmlFor="z">Zona donde das clase</Label><Input id="z" className="mt-1" placeholder="Madrid sur" value={form.zona} onChange={set("zona")} /></div>
-            <div className="sm:col-span-2"><Label htmlFor="b">Cómo eres como profe</Label>
-              <Textarea id="b" rows={4} className="mt-1" placeholder="Cómo son tus clases, qué ambiente creas, qué consigue un alumno contigo en sus primeros meses…" value={form.bio} onChange={set("bio")} /></div>
+            <div className="sm:col-span-2"><Label htmlFor="b">{esc ? "Quiénes sois" : "Cómo eres como profe"}</Label>
+              <Textarea id="b" rows={4} className="mt-1" placeholder={esc ? "Vuestra historia, el ambiente de la escuela y qué consigue un alumno en su primer curso…" : "Cómo son tus clases, qué ambiente creas, qué consigue un alumno contigo en sus primeros meses…"} value={form.bio} onChange={set("bio")} /></div>
           </div>
         </Section>
 
         <Section title="Cómo enseñas">
           <div className="space-y-5">
-            <div><Label htmlFor="m">Tu metodología</Label>
+            <div><Label htmlFor="m">{esc ? "Vuestra metodología" : "Tu metodología"}</Label>
               <Textarea id="m" rows={4} className="mt-1" placeholder="Ej.: aprendemos canciones desde el primer día, tocamos en grupo, preparamos un concierto al final del trimestre…" value={form.metodologia} onChange={set("metodologia")} /></div>
             <div>
               <Label>A quién enseñas</Label>
               <div className="mt-2 flex flex-wrap gap-2">
                 {NIVELES.map((n) => <Chip key={n.id} on={form.niveles_alumnos.includes(n.id)} onClick={() => setForm({ ...form, niveles_alumnos: toggleArr(form.niveles_alumnos, n.id) })}>{n.label}</Chip>)}
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(Object.keys(PUBLICO) as Publico[]).map((k) => <Chip key={k} on={form.publico.includes(k)} onClick={() => setForm({ ...form, publico: toggleArr(form.publico, k) })}>{PUBLICO[k]}</Chip>)}
               </div>
             </div>
             <div>
@@ -226,19 +239,19 @@ export function ProfePerfil(b: Base) {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div><Label htmlFor="a">Años dando clase</Label><Input id="a" type="number" min={0} className="mt-1" value={form.anios_ensenando} onChange={set("anios_ensenando")} /></div>
-              <div><Label htmlFor="p">Precio orientativo por hora (€)</Label><Input id="p" type="number" min={0} step="0.5" className="mt-1" placeholder="25" value={form.precio_hora} onChange={set("precio_hora")} /></div>
+              <div><Label htmlFor="p">{esc ? "Precio desde, por hora (€)" : "Precio orientativo por hora (€)"}</Label><Input id="p" type="number" min={0} step="0.5" className="mt-1" placeholder="25" value={form.precio_hora} onChange={set("precio_hora")} /></div>
             </div>
           </div>
         </Section>
 
-        <Section title="Trayectoria" hint="Ayuda a que los alumnos confíen en ti y a verificar tu ficha.">
+        {!esc && <Section title="Trayectoria" hint="Ayuda a que los alumnos confíen en ti y a verificar tu ficha.">
           <div className="space-y-4">
             <div><Label htmlFor="e">Dónde has enseñado o tocado</Label>
               <Textarea id="e" rows={3} className="mt-1" placeholder="Escuelas, academias, bandas, giras, estudios de grabación…" value={form.experiencia} onChange={set("experiencia")} /></div>
             <div><Label htmlFor="f">Formación</Label>
               <Textarea id="f" rows={2} className="mt-1" placeholder="Conservatorio, escuelas de música moderna, cursos, autodidacta…" value={form.formacion} onChange={set("formacion")} /></div>
           </div>
-        </Section>
+        </Section>}
 
         <Section title="Qué enseñas">
           <Label>Instrumentos</Label>
@@ -269,6 +282,8 @@ export function ProfePerfil(b: Base) {
 
         <div className="flex justify-end"><Button type="submit" variant="pop" size="lg">Guardar ficha</Button></div>
       </form>
+
+      {esc && <EscuelaSecciones uid={uid} instrumentos={b.instrumentos} />}
 
       <Section title="Demuestra tu nivel" hint="Sube un vídeo tocando o dando clase, títulos o certificados, o enlaces a tus canales. Lo revisamos para darte el sello de profe verificado. Solo tú y el equipo de revisión veis estos archivos.">
         <div className="space-y-2">

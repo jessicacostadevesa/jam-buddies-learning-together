@@ -30,3 +30,4 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Musician profile data lives in `perfiles` + join tables (perfil_instrumentos, perfil_estilos, disponibilidad); roles in `user_roles` set by signup trigger from metadata `rol`. Why: one profile feeds all features and roles must not be user-editable.
+- Role-specific profile data lives in 1:1 tables keyed by perfil_id (profesor_detalles, escuela_detalles, alumno_detalles, local_detalles); fiscal data in separate owner/admin-only tables. Why: public cards read detail tables freely while private data stays locked.

@@ -21,7 +21,7 @@ export const listarProfes = createServerFn({ method: "GET" }).handler(async () =
   const sb = publicClient();
   const [det, ver] = await Promise.all([
     sb.from("profesor_detalles").select(
-      "perfil_id, titular, anios_ensenando, niveles_alumnos, modalidades, precio_hora, estilos_otros, perfiles(nombre, ciudad, zona, bio, foto_url, perfil_instrumentos(instrumentos(nombre)), perfil_estilos(estilos(nombre)))",
+      "perfil_id, es_escuela, titular, anios_ensenando, niveles_alumnos, modalidades, precio_hora, estilos_otros, perfiles(nombre, ciudad, zona, bio, foto_url, perfil_instrumentos(instrumentos(nombre)), perfil_estilos(estilos(nombre)))",
     ),
     sb.from("profesor_verificacion").select("perfil_id, verificado"),
   ]);
@@ -44,5 +44,6 @@ export const listarProfes = createServerFn({ method: "GET" }).handler(async () =
       ...(d.estilos_otros ? d.estilos_otros.split(",").map((s) => s.trim()).filter(Boolean) : []),
     ],
     verificado: verificados.has(d.perfil_id),
+    esEscuela: d.es_escuela,
   }));
 });

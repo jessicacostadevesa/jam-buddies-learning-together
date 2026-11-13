@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ProfePerfil, profeQuery } from "@/components/perfil/ProfePerfil";
+import { escuelaQuery } from "@/components/perfil/EscuelaSecciones";
+import { AlumnoExtra, alumnoQuery } from "@/components/perfil/AlumnoExtra";
+import { LocalPerfil, localQuery } from "@/components/perfil/LocalPerfil";
 
 type Nivel = Database["public"]["Enums"]["nivel_musical"];
 type Dia = Database["public"]["Enums"]["dia_semana"];
@@ -58,7 +61,12 @@ export const Route = createFileRoute("/_authenticated/perfil")({
   }),
   loader: async ({ context }) => {
     const d = await context.queryClient.ensureQueryData(perfilQuery(context.user.id));
-    if (d.roles.includes("profesor")) await context.queryClient.ensureQueryData(profeQuery(context.user.id));
+    if (d.roles.includes("profesor")) await Promise.all([
+      context.queryClient.ensureQueryData(profeQuery(context.user.id)),
+      context.queryClient.ensureQueryData(escuelaQuery(context.user.id)),
+    ]);
+    else if (d.roles.includes("local")) await context.queryClient.ensureQueryData(localQuery(context.user.id));
+    else await context.queryClient.ensureQueryData(alumnoQuery(context.user.id));
   },
   component: PerfilPage,
 });
@@ -134,6 +142,17 @@ function PerfilPage() {
     );
   }
 
+  if (data.roles.includes("local")) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <main className="mx-auto max-w-3xl space-y-6 px-5 py-10">
+          <LocalPerfil uid={uid} perfil={data.perfil} estilos={data.estilos} misEstilos={data.misEstilos} refreshBase={refresh} />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -145,7 +164,7 @@ function PerfilPage() {
             ))}
           </div>
           <h1 className="mt-3 text-4xl font-extrabold">Tu perfil de músico</h1>
-          <p className="mt-1 text-muted-foreground">Esto alimenta el buscador de profes, el match de bandas y el mapa de locales.</p>
+          <p className="mt-1 text-muted-foreground">Cuéntanos qué tocas y qué buscas: así te recomendamos profes, compañeros de banda y locales que encajan contigo.</p>
         </div>
 
         <Section title="Sobre ti">
@@ -158,7 +177,7 @@ function PerfilPage() {
           </form>
         </Section>
 
-        <Section title="Instrumentos y nivel real">
+        <Section title="Instrumentos que tocas o quieres aprender">
           <div className="flex flex-wrap gap-2">
             {data.misInstrumentos.length === 0 && <p className="text-sm text-muted-foreground">Añade el instrumento que tocas o quieres aprender.</p>}
             {data.misInstrumentos.map((m) => (
@@ -180,6 +199,8 @@ function PerfilPage() {
           </div>
         </Section>
 
+        <AlumnoExtra uid={uid} />
+
         <Section title="Gustos musicales">
           <div className="flex flex-wrap gap-2">
             {data.estilos.map((e) => {
@@ -194,7 +215,7 @@ function PerfilPage() {
           </div>
         </Section>
 
-        <Section title="Disponibilidad">
+        <Section title="Cuándo puedes tocar">
           <div className="overflow-x-auto">
             <table className="text-sm">
               <thead><tr><th />{DIAS.map((d) => <th key={d} className="px-1 pb-2 font-bold">{DIA_LABEL[d]}</th>)}</tr></thead>

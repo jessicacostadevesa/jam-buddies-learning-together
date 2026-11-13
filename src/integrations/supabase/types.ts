@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      alumno_detalles: {
+        Row: {
+          busca: string[]
+          distancia_km: number | null
+          edad: Database["public"]["Enums"]["publico_edad"] | null
+          estilos_otros: string | null
+          modalidades: Database["public"]["Enums"]["modalidad_clase"][]
+          objetivos: string[]
+          perfil_id: string
+          presupuesto_mes: number | null
+          referentes: string | null
+          tiene_instrumento: boolean
+          updated_at: string
+        }
+        Insert: {
+          busca?: string[]
+          distancia_km?: number | null
+          edad?: Database["public"]["Enums"]["publico_edad"] | null
+          estilos_otros?: string | null
+          modalidades?: Database["public"]["Enums"]["modalidad_clase"][]
+          objetivos?: string[]
+          perfil_id: string
+          presupuesto_mes?: number | null
+          referentes?: string | null
+          tiene_instrumento?: boolean
+          updated_at?: string
+        }
+        Update: {
+          busca?: string[]
+          distancia_km?: number | null
+          edad?: Database["public"]["Enums"]["publico_edad"] | null
+          estilos_otros?: string | null
+          modalidades?: Database["public"]["Enums"]["modalidad_clase"][]
+          objetivos?: string[]
+          perfil_id?: string
+          presupuesto_mes?: number | null
+          referentes?: string | null
+          tiene_instrumento?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alumno_detalles_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       disponibilidad: {
         Row: {
           dia: Database["public"]["Enums"]["dia_semana"]
@@ -36,6 +86,201 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "disponibilidad_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escuela_datos_fiscales: {
+        Row: {
+          cif: string | null
+          perfil_id: string
+          razon_social: string | null
+          responsable: string | null
+        }
+        Insert: {
+          cif?: string | null
+          perfil_id: string
+          razon_social?: string | null
+          responsable?: string | null
+        }
+        Update: {
+          cif?: string | null
+          perfil_id?: string
+          razon_social?: string | null
+          responsable?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escuela_datos_fiscales_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escuela_detalles: {
+        Row: {
+          anio_fundacion: number | null
+          clase_prueba: boolean
+          codigo_postal: string | null
+          direccion: string | null
+          email_contacto: string | null
+          horario_atencion: string | null
+          instagram: string | null
+          instalaciones: string | null
+          matricula: number | null
+          num_alumnos: number | null
+          num_profesores: number | null
+          num_salas: number | null
+          perfil_id: string
+          servicios: string[]
+          telefono: string | null
+          updated_at: string
+          web: string | null
+        }
+        Insert: {
+          anio_fundacion?: number | null
+          clase_prueba?: boolean
+          codigo_postal?: string | null
+          direccion?: string | null
+          email_contacto?: string | null
+          horario_atencion?: string | null
+          instagram?: string | null
+          instalaciones?: string | null
+          matricula?: number | null
+          num_alumnos?: number | null
+          num_profesores?: number | null
+          num_salas?: number | null
+          perfil_id: string
+          servicios?: string[]
+          telefono?: string | null
+          updated_at?: string
+          web?: string | null
+        }
+        Update: {
+          anio_fundacion?: number | null
+          clase_prueba?: boolean
+          codigo_postal?: string | null
+          direccion?: string | null
+          email_contacto?: string | null
+          horario_atencion?: string | null
+          instagram?: string | null
+          instalaciones?: string | null
+          matricula?: number | null
+          num_alumnos?: number | null
+          num_profesores?: number | null
+          num_salas?: number | null
+          perfil_id?: string
+          servicios?: string[]
+          telefono?: string | null
+          updated_at?: string
+          web?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escuela_detalles_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escuela_equipo: {
+        Row: {
+          bio: string | null
+          created_at: string
+          especialidad: string | null
+          id: string
+          nombre: string
+          perfil_id: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          especialidad?: string | null
+          id?: string
+          nombre: string
+          perfil_id: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          especialidad?: string | null
+          id?: string
+          nombre?: string
+          perfil_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escuela_equipo_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escuela_programas: {
+        Row: {
+          created_at: string
+          descripcion: string | null
+          duracion: string | null
+          formato: Database["public"]["Enums"]["formato_clase"]
+          id: string
+          instrumento_id: number | null
+          nivel: Database["public"]["Enums"]["nivel_musical"] | null
+          nombre: string
+          perfil_id: string
+          periodo_precio: string
+          plazas: number | null
+          precio: number | null
+          publico: Database["public"]["Enums"]["publico_edad"] | null
+        }
+        Insert: {
+          created_at?: string
+          descripcion?: string | null
+          duracion?: string | null
+          formato?: Database["public"]["Enums"]["formato_clase"]
+          id?: string
+          instrumento_id?: number | null
+          nivel?: Database["public"]["Enums"]["nivel_musical"] | null
+          nombre: string
+          perfil_id: string
+          periodo_precio?: string
+          plazas?: number | null
+          precio?: number | null
+          publico?: Database["public"]["Enums"]["publico_edad"] | null
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string | null
+          duracion?: string | null
+          formato?: Database["public"]["Enums"]["formato_clase"]
+          id?: string
+          instrumento_id?: number | null
+          nivel?: Database["public"]["Enums"]["nivel_musical"] | null
+          nombre?: string
+          perfil_id?: string
+          periodo_precio?: string
+          plazas?: number | null
+          precio?: number | null
+          publico?: Database["public"]["Enums"]["publico_edad"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escuela_programas_instrumento_id_fkey"
+            columns: ["instrumento_id"]
+            isOneToOne: false
+            referencedRelation: "instrumentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escuela_programas_perfil_id_fkey"
             columns: ["perfil_id"]
             isOneToOne: false
             referencedRelation: "perfiles"
@@ -149,6 +394,112 @@ export type Database = {
         }
         Relationships: []
       }
+      local_datos_fiscales: {
+        Row: {
+          cif: string | null
+          perfil_id: string
+          razon_social: string | null
+          responsable: string | null
+        }
+        Insert: {
+          cif?: string | null
+          perfil_id: string
+          razon_social?: string | null
+          responsable?: string | null
+        }
+        Update: {
+          cif?: string | null
+          perfil_id?: string
+          razon_social?: string | null
+          responsable?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "local_datos_fiscales_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      local_detalles: {
+        Row: {
+          accesible: boolean
+          aforo: number | null
+          backline: string[]
+          codigo_postal: string | null
+          condiciones_bandas: string | null
+          direccion: string | null
+          email_contacto: string | null
+          equipamiento: string | null
+          estilos_otros: string | null
+          horario_apertura: string | null
+          instagram: string | null
+          num_salas: number | null
+          perfil_id: string
+          precio_hora_ensayo: number | null
+          servicios: string[]
+          telefono: string | null
+          tipos: string[]
+          titular: string | null
+          updated_at: string
+          web: string | null
+        }
+        Insert: {
+          accesible?: boolean
+          aforo?: number | null
+          backline?: string[]
+          codigo_postal?: string | null
+          condiciones_bandas?: string | null
+          direccion?: string | null
+          email_contacto?: string | null
+          equipamiento?: string | null
+          estilos_otros?: string | null
+          horario_apertura?: string | null
+          instagram?: string | null
+          num_salas?: number | null
+          perfil_id: string
+          precio_hora_ensayo?: number | null
+          servicios?: string[]
+          telefono?: string | null
+          tipos?: string[]
+          titular?: string | null
+          updated_at?: string
+          web?: string | null
+        }
+        Update: {
+          accesible?: boolean
+          aforo?: number | null
+          backline?: string[]
+          codigo_postal?: string | null
+          condiciones_bandas?: string | null
+          direccion?: string | null
+          email_contacto?: string | null
+          equipamiento?: string | null
+          estilos_otros?: string | null
+          horario_apertura?: string | null
+          instagram?: string | null
+          num_salas?: number | null
+          perfil_id?: string
+          precio_hora_ensayo?: number | null
+          servicios?: string[]
+          telefono?: string | null
+          tipos?: string[]
+          titular?: string | null
+          updated_at?: string
+          web?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "local_detalles_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       perfil_estilos: {
         Row: {
           estilo_id: number
@@ -254,6 +605,7 @@ export type Database = {
       profesor_detalles: {
         Row: {
           anios_ensenando: number
+          es_escuela: boolean
           estilos_otros: string | null
           experiencia: string | null
           formacion: string | null
@@ -262,11 +614,13 @@ export type Database = {
           niveles_alumnos: Database["public"]["Enums"]["nivel_musical"][]
           perfil_id: string
           precio_hora: number | null
+          publico: Database["public"]["Enums"]["publico_edad"][]
           titular: string | null
           updated_at: string
         }
         Insert: {
           anios_ensenando?: number
+          es_escuela?: boolean
           estilos_otros?: string | null
           experiencia?: string | null
           formacion?: string | null
@@ -275,11 +629,13 @@ export type Database = {
           niveles_alumnos?: Database["public"]["Enums"]["nivel_musical"][]
           perfil_id: string
           precio_hora?: number | null
+          publico?: Database["public"]["Enums"]["publico_edad"][]
           titular?: string | null
           updated_at?: string
         }
         Update: {
           anios_ensenando?: number
+          es_escuela?: boolean
           estilos_otros?: string | null
           experiencia?: string | null
           formacion?: string | null
@@ -288,6 +644,7 @@ export type Database = {
           niveles_alumnos?: Database["public"]["Enums"]["nivel_musical"][]
           perfil_id?: string
           precio_hora?: number | null
+          publico?: Database["public"]["Enums"]["publico_edad"][]
           titular?: string | null
           updated_at?: string
         }
@@ -406,9 +763,11 @@ export type Database = {
         | "viernes"
         | "sabado"
         | "domingo"
+      formato_clase: "individual" | "grupal" | "banda"
       franja_horaria: "manana" | "tarde" | "noche"
       modalidad_clase: "presencial" | "online" | "domicilio"
       nivel_musical: "inicial" | "intermedio" | "avanzado"
+      publico_edad: "ninos" | "adolescentes" | "adultos" | "mayores"
       tipo_evidencia: "video" | "documento" | "enlace"
     }
     CompositeTypes: {
@@ -547,9 +906,11 @@ export const Constants = {
         "sabado",
         "domingo",
       ],
+      formato_clase: ["individual", "grupal", "banda"],
       franja_horaria: ["manana", "tarde", "noche"],
       modalidad_clase: ["presencial", "online", "domicilio"],
       nivel_musical: ["inicial", "intermedio", "avanzado"],
+      publico_edad: ["ninos", "adolescentes", "adultos", "mayores"],
       tipo_evidencia: ["video", "documento", "enlace"],
     },
   },

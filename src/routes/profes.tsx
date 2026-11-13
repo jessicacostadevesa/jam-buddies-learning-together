@@ -56,6 +56,7 @@ function ProfesPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-xl font-bold">{p.nombre || "Profe sin nombre"}</h2>
+                    <span className="rounded-full border-2 border-ink bg-card px-2 py-0.5 text-xs font-semibold">{p.esEscuela ? "Escuela" : "Profe particular"}</span>
                     {p.verificado && <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-accent px-2 py-0.5 text-xs font-semibold"><BadgeCheck className="h-3.5 w-3.5" /> Verificado</span>}
                   </div>
                   {p.titular && <p className="font-semibold text-primary">{p.titular}</p>}

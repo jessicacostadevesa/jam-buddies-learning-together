@@ -15,6 +15,20 @@
       "when": 1794595478511,
       "tag": "0001_ficha_profesor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794596212969,
+      "tag": "0002_ficha_escuela",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794596348600,
+      "tag": "0003_fichas_alumno_local",
+      "breakpoints": true
     }
   ]
 }
