@@ -20,6 +20,7 @@ export function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-2">
         <Button asChild variant="ghost" size="sm"><Link to="/profes">Profes</Link></Button>
+        <Button asChild variant="ghost" size="sm"><Link to="/locales">Locales</Link></Button>
         {signedIn ? (
           <div className="flex items-center gap-2">
             <Button asChild variant="ink" size="sm"><Link to="/perfil">Mi perfil</Link></Button>

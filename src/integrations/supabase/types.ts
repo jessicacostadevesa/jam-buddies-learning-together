@@ -436,7 +436,11 @@ export type Database = {
           estilos_otros: string | null
           horario_apertura: string | null
           instagram: string | null
+          latitud: number | null
+          longitud: number | null
           num_salas: number | null
+          organiza_conciertos: boolean
+          organiza_jams: boolean
           perfil_id: string
           precio_hora_ensayo: number | null
           servicios: string[]
@@ -458,7 +462,11 @@ export type Database = {
           estilos_otros?: string | null
           horario_apertura?: string | null
           instagram?: string | null
+          latitud?: number | null
+          longitud?: number | null
           num_salas?: number | null
+          organiza_conciertos?: boolean
+          organiza_jams?: boolean
           perfil_id: string
           precio_hora_ensayo?: number | null
           servicios?: string[]
@@ -480,7 +488,11 @@ export type Database = {
           estilos_otros?: string | null
           horario_apertura?: string | null
           instagram?: string | null
+          latitud?: number | null
+          longitud?: number | null
           num_salas?: number | null
+          organiza_conciertos?: boolean
+          organiza_jams?: boolean
           perfil_id?: string
           precio_hora_ensayo?: number | null
           servicios?: string[]
@@ -745,6 +757,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      directorio_locales_publico: {
+        Args: never
+        Returns: {
+          ciudad: string
+          conciertos: boolean
+          id: string
+          jams: boolean
+          lat: number
+          lng: number
+          nombre: string
+          precio: number
+          tipos: string[]
+        }[]
+      }
       directorio_profes_publico: {
         Args: never
         Returns: {

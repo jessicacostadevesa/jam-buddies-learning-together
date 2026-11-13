@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as LocalesRouteImport } from './routes/locales'
 import { Route as ProfesRouteImport } from './routes/profes'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 
@@ -29,6 +30,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LocalesRoute = LocalesRouteImport.update({
+  id: '/locales',
+  path: '/locales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfesRoute = ProfesRouteImport.update({
   id: '/profes',
   path: '/profes',
@@ -43,12 +49,14 @@ const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/locales': typeof LocalesRoute
   '/profes': typeof ProfesRoute
   '/perfil': typeof AuthenticatedPerfilRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/locales': typeof LocalesRoute
   '/profes': typeof ProfesRoute
   '/perfil': typeof AuthenticatedPerfilRoute
 }
@@ -57,19 +65,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/locales': typeof LocalesRoute
   '/profes': typeof ProfesRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/profes' | '/perfil'
+  fullPaths: '/' | '/auth' | '/locales' | '/profes' | '/perfil'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/profes' | '/perfil'
+  to: '/' | '/auth' | '/locales' | '/profes' | '/perfil'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/locales'
     | '/profes'
     | '/_authenticated/perfil'
   fileRoutesById: FileRoutesById
@@ -78,6 +88,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  LocalesRoute: typeof LocalesRoute
   ProfesRoute: typeof ProfesRoute
 }
 
@@ -102,6 +113,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/locales': {
+      id: '/locales'
+      path: '/locales'
+      fullPath: '/locales'
+      preLoaderRoute: typeof LocalesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profes': {
@@ -136,6 +154,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  LocalesRoute: LocalesRoute,
   ProfesRoute: ProfesRoute,
 }
 export const routeTree = rootRouteImport

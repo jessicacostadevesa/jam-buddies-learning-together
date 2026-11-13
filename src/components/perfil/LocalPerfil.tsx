@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ubicarMiLocal } from "@/lib/locales.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,11 +79,19 @@ export function LocalPerfil({ uid, perfil, estilos, misEstilos, refreshBase }: P
         email_contacto: f.email_contacto, web: f.web, instagram: f.instagram, horario_apertura: f.horario_apertura, aforo: num(f.aforo),
         num_salas: num(f.num_salas), precio_hora_ensayo: num(f.precio_hora_ensayo), backline: f.backline, equipamiento: f.equipamiento,
         servicios: f.servicios, condiciones_bandas: f.condiciones_bandas, accesible: f.accesible, estilos_otros: f.estilos_otros || null, updated_at: now,
+        organiza_jams: f.servicios.includes("Jam sessions") || f.servicios.includes("Open mic"),
+        organiza_conciertos: f.servicios.includes("Conciertos de bandas noveles"),
       }),
       supabase.from("local_datos_fiscales").upsert({ perfil_id: uid, razon_social: f.razon_social, cif: f.cif, responsable: f.responsable }),
     ]);
     if (r.some((x) => x.error)) { toast.error("No se pudo guardar"); return; }
     toast.success("Ficha del local guardada");
+    const dir = [f.direccion, f.codigo_postal, f.ciudad].filter(Boolean).join(", ");
+    if (f.direccion.trim()) {
+      ubicarMiLocal({ data: { direccion: dir } })
+        .then((u) => (u.ok ? toast.success("Tu local ya aparece en el mapa") : toast.error("No encontramos esa dirección en el mapa")))
+        .catch(() => toast.error("No se pudo situar el local en el mapa"));
+    }
     qc.invalidateQueries({ queryKey: ["local", uid] }); refreshBase();
   }
   async function toggleEstilo(id: number) {

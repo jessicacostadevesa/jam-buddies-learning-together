@@ -43,6 +43,13 @@
       "when": 1794598497980,
       "tag": "0005_protect_verification_metadata",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794598978144,
+      "tag": "0006_mapa_locales",
+      "breakpoints": true
     }
   ]
 }
