@@ -57,6 +57,8 @@ export const Route = createFileRoute("/_authenticated/perfil")({
       { name: "description", content: "Tu instrumento, nivel, gustos, zona y disponibilidad." },
       { property: "og:title", content: "Mi perfil — Tocamos" },
       { property: "og:description", content: "Tu perfil único de músico." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: async ({ context }) => {

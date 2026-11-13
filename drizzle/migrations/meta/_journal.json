@@ -29,6 +29,20 @@
       "when": 1794596348600,
       "tag": "0003_fichas_alumno_local",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794598456504,
+      "tag": "0004_protect_private_profiles_and_directory",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794598497980,
+      "tag": "0005_protect_verification_metadata",
+      "breakpoints": true
     }
   ]
 }

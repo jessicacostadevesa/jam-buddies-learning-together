@@ -24,6 +24,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Entra o crea tu perfil de músico, profe o local en Tocamos." },
       { property: "og:title", content: "Entrar — Tocamos" },
       { property: "og:description", content: "Crea tu perfil de músico, profe o local." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,

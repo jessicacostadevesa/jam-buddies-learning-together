@@ -745,6 +745,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      directorio_profes_publico: {
+        Args: never
+        Returns: {
+          anios: number
+          bio: string
+          ciudad: string
+          esEscuela: boolean
+          estilos: string[]
+          id: string
+          instrumentos: string[]
+          modalidades: Database["public"]["Enums"]["modalidad_clase"][]
+          niveles: Database["public"]["Enums"]["nivel_musical"][]
+          nombre: string
+          precio: number
+          titular: string
+          verificado: boolean
+          zona: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
