@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Musician profile data lives in `perfiles` + join tables (perfil_instrumentos, perfil_estilos, disponibilidad); roles in `user_roles` set by signup trigger from metadata `rol`. Why: one profile feeds all features and roles must not be user-editable.
