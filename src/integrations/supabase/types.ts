@@ -58,6 +58,82 @@ export type Database = {
         }
         Relationships: []
       }
+      horario_especifico: {
+        Row: {
+          disponible: boolean
+          fecha_fin: string
+          fecha_inicio: string
+          hora_fin: string | null
+          hora_inicio: string | null
+          horas_max: number | null
+          id: string
+          nota: string | null
+          perfil_id: string
+        }
+        Insert: {
+          disponible?: boolean
+          fecha_fin: string
+          fecha_inicio: string
+          hora_fin?: string | null
+          hora_inicio?: string | null
+          horas_max?: number | null
+          id?: string
+          nota?: string | null
+          perfil_id: string
+        }
+        Update: {
+          disponible?: boolean
+          fecha_fin?: string
+          fecha_inicio?: string
+          hora_fin?: string | null
+          hora_inicio?: string | null
+          horas_max?: number | null
+          id?: string
+          nota?: string | null
+          perfil_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horario_especifico_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      horario_semanal: {
+        Row: {
+          dia: Database["public"]["Enums"]["dia_semana"]
+          hora_fin: string
+          hora_inicio: string
+          id: string
+          perfil_id: string
+        }
+        Insert: {
+          dia: Database["public"]["Enums"]["dia_semana"]
+          hora_fin: string
+          hora_inicio: string
+          id?: string
+          perfil_id: string
+        }
+        Update: {
+          dia?: Database["public"]["Enums"]["dia_semana"]
+          hora_fin?: string
+          hora_inicio?: string
+          id?: string
+          perfil_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horario_semanal_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       instrumentos: {
         Row: {
           id: number
@@ -175,6 +251,120 @@ export type Database = {
         }
         Relationships: []
       }
+      profesor_detalles: {
+        Row: {
+          anios_ensenando: number
+          estilos_otros: string | null
+          experiencia: string | null
+          formacion: string | null
+          metodologia: string | null
+          modalidades: Database["public"]["Enums"]["modalidad_clase"][]
+          niveles_alumnos: Database["public"]["Enums"]["nivel_musical"][]
+          perfil_id: string
+          precio_hora: number | null
+          titular: string | null
+          updated_at: string
+        }
+        Insert: {
+          anios_ensenando?: number
+          estilos_otros?: string | null
+          experiencia?: string | null
+          formacion?: string | null
+          metodologia?: string | null
+          modalidades?: Database["public"]["Enums"]["modalidad_clase"][]
+          niveles_alumnos?: Database["public"]["Enums"]["nivel_musical"][]
+          perfil_id: string
+          precio_hora?: number | null
+          titular?: string | null
+          updated_at?: string
+        }
+        Update: {
+          anios_ensenando?: number
+          estilos_otros?: string | null
+          experiencia?: string | null
+          formacion?: string | null
+          metodologia?: string | null
+          modalidades?: Database["public"]["Enums"]["modalidad_clase"][]
+          niveles_alumnos?: Database["public"]["Enums"]["nivel_musical"][]
+          perfil_id?: string
+          precio_hora?: number | null
+          titular?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profesor_detalles_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profesor_evidencias: {
+        Row: {
+          created_at: string
+          id: string
+          perfil_id: string
+          storage_path: string | null
+          tipo: Database["public"]["Enums"]["tipo_evidencia"]
+          titulo: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          perfil_id: string
+          storage_path?: string | null
+          tipo: Database["public"]["Enums"]["tipo_evidencia"]
+          titulo: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          perfil_id?: string
+          storage_path?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_evidencia"]
+          titulo?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profesor_evidencias_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profesor_verificacion: {
+        Row: {
+          perfil_id: string
+          verificado: boolean
+          verificado_at: string | null
+        }
+        Insert: {
+          perfil_id: string
+          verificado?: boolean
+          verificado_at?: string | null
+        }
+        Update: {
+          perfil_id?: string
+          verificado?: boolean
+          verificado_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profesor_verificacion_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -217,7 +407,9 @@ export type Database = {
         | "sabado"
         | "domingo"
       franja_horaria: "manana" | "tarde" | "noche"
+      modalidad_clase: "presencial" | "online" | "domicilio"
       nivel_musical: "inicial" | "intermedio" | "avanzado"
+      tipo_evidencia: "video" | "documento" | "enlace"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -356,7 +548,9 @@ export const Constants = {
         "domingo",
       ],
       franja_horaria: ["manana", "tarde", "noche"],
+      modalidad_clase: ["presencial", "online", "domicilio"],
       nivel_musical: ["inicial", "intermedio", "avanzado"],
+      tipo_evidencia: ["video", "documento", "enlace"],
     },
   },
 } as const

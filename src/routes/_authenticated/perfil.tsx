@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ProfePerfil, profeQuery } from "@/components/perfil/ProfePerfil";
 
 type Nivel = Database["public"]["Enums"]["nivel_musical"];
 type Dia = Database["public"]["Enums"]["dia_semana"];
@@ -55,7 +56,10 @@ export const Route = createFileRoute("/_authenticated/perfil")({
       { property: "og:description", content: "Tu perfil único de músico." },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(perfilQuery(context.user.id)),
+  loader: async ({ context }) => {
+    const d = await context.queryClient.ensureQueryData(perfilQuery(context.user.id));
+    if (d.roles.includes("profesor")) await context.queryClient.ensureQueryData(profeQuery(context.user.id));
+  },
   component: PerfilPage,
 });
 
@@ -117,6 +121,18 @@ function PerfilPage() {
 
   const instName = (id: number) => data.instrumentos.find((i) => i.id === id)?.nombre ?? "";
   const disponibles = data.instrumentos.filter((i) => !data.misInstrumentos.some((m) => m.instrumento_id === i.id));
+
+  if (data.roles.includes("profesor")) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <main className="mx-auto max-w-3xl space-y-6 px-5 py-10">
+          <ProfePerfil uid={uid} perfil={data.perfil} instrumentos={data.instrumentos} estilos={data.estilos}
+            misInstrumentos={data.misInstrumentos} misEstilos={data.misEstilos} refreshBase={refresh} />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
