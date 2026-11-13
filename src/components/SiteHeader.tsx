@@ -18,6 +18,8 @@ export function SiteHeader() {
           <span className="inline-block h-6 w-6 rounded-full border-2 border-ink bg-primary" />
           tocamos
         </Link>
+        <nav className="flex items-center gap-2">
+        <Button asChild variant="ghost" size="sm"><Link to="/profes">Profes</Link></Button>
         {signedIn ? (
           <div className="flex items-center gap-2">
             <Button asChild variant="ink" size="sm"><Link to="/perfil">Mi perfil</Link></Button>
@@ -26,6 +28,7 @@ export function SiteHeader() {
         ) : (
           <Button asChild variant="pop" size="sm"><Link to="/auth">Entrar</Link></Button>
         )}
+        </nav>
       </div>
     </header>
   );
