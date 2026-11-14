@@ -1,12 +1,48 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { BadgeCheck, MapPin, Search } from "lucide-react";
+import { BadgeCheck, ListMusic, MapPin, Music2, Search } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Input } from "@/components/ui/input";
 import { listarProfes } from "@/lib/profes.functions";
 
 const profesQuery = queryOptions({ queryKey: ["profes"], queryFn: () => listarProfes() });
+
+type ArtistaPub = { spotify_id: string; nombre: string; imagen_url: string | null };
+type ListaPub = ArtistaPub & { total_canciones: number | null };
+
+function SpotifyPie({ artistas, playlists }: { artistas: ArtistaPub[]; playlists: ListaPub[] }) {
+  if (!artistas.length && !playlists.length) return null;
+  const extraA = artistas.length - 4;
+  return (
+    <div className="mt-4 space-y-2 border-t border-border pt-3 text-xs text-muted-foreground">
+      {artistas.length > 0 && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <span className="inline-flex items-center gap-1"><Music2 className="h-3.5 w-3.5" /> Le gusta:</span>
+          {artistas.slice(0, 4).map((a) => (
+            <a key={a.spotify_id} href={`https://open.spotify.com/artist/${a.spotify_id}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground">
+              {a.imagen_url ? <img src={a.imagen_url} alt="" loading="lazy" className="h-[22px] w-[22px] rounded-full object-cover" /> : <span className="h-[22px] w-[22px] rounded-full bg-secondary" />}
+              {a.nombre}
+            </a>
+          ))}
+          {extraA > 0 && <span>+{extraA}</span>}
+        </div>
+      )}
+      {playlists.length > 0 && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <span className="inline-flex items-center gap-1"><ListMusic className="h-3.5 w-3.5" /> Sus listas:</span>
+          {playlists.slice(0, 3).map((p) => (
+            <a key={p.spotify_id} href={`https://open.spotify.com/playlist/${p.spotify_id}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground">
+              {p.imagen_url ? <img src={p.imagen_url} alt="" loading="lazy" className="h-[22px] w-[22px] rounded object-cover" /> : <span className="h-[22px] w-[22px] rounded bg-secondary" />}
+              {p.nombre}
+            </a>
+          ))}
+          {playlists.length > 3 && <span>+{playlists.length - 3}</span>}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const NIVEL: Record<string, string> = { inicial: "Desde cero", intermedio: "Ya tocan algo", avanzado: "Avanzados" };
 const MOD: Record<string, string> = { presencial: "En aula", domicilio: "A domicilio", online: "Online" };
@@ -74,6 +110,7 @@ function ProfesPage() {
                 {p.niveles.length > 0 && <span>{p.niveles.map((n) => NIVEL[n]).join(" · ")}</span>}
                 {p.modalidades.length > 0 && <span>{p.modalidades.map((m) => MOD[m]).join(" · ")}</span>}
               </div>
+              <SpotifyPie artistas={(p.artistas ?? []) as ArtistaPub[]} playlists={(p.playlists ?? []) as ListaPub[]} />
             </article>
           ))}
         </div>

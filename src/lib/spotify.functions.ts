@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { artistaSpotifySchema, oauthVigente } from "@/lib/spotify";
+import { artistaSpotifySchema, playlistSpotifySchema, imagenMiniatura, oauthVigente } from "@/lib/spotify";
 
 async function hash(value: string) {
   const bytes = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)));
@@ -23,7 +23,7 @@ export const iniciarSpotify = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error: insertError } = await supabaseAdmin.from("spotify_oauth_sessions").insert({ state_hash: await hash(state), user_id: context.userId, verifier, redirect_uri: redirectUri, expires_at: new Date(Date.now() + 600000).toISOString() });
     if (insertError) throw new Error("No se pudo iniciar Spotify");
-    const params = new URLSearchParams({ client_id: clientId, response_type: "code", redirect_uri: redirectUri, scope: "user-top-read", state, code_challenge_method: "S256", code_challenge: await hash(verifier) });
+    const params = new URLSearchParams({ client_id: clientId, response_type: "code", redirect_uri: redirectUri, scope: "user-top-read playlist-read-private", state, code_challenge_method: "S256", code_challenge: await hash(verifier) });
     return { url: `https://accounts.spotify.com/authorize?${params}` };
   });
 
@@ -46,6 +46,14 @@ export const consultarArtistasSpotify = createServerFn({ method: "POST" })
       console.error(`Spotify artists [${response.status}]: ${detail}`);
       throw new Error(`Spotify no pudo consultar tus artistas (${response.status}). Comprueba que tu cuenta esté autorizada para usar la aplicación.`);
     }
-    const json = await response.json() as { items?: { id: string; name: string }[] };
-    return (json.items ?? []).map((a) => artistaSpotifySchema.parse({ spotify_id: a.id, nombre: a.name }));
+    const json = await response.json() as { items?: { id: string; name: string; images?: { url: string; width?: number }[] }[] };
+    const artistas = (json.items ?? []).map((a) => artistaSpotifySchema.parse({ spotify_id: a.id, nombre: a.name, imagen_url: imagenMiniatura(a.images) }));
+    let playlists: ReturnType<typeof playlistSpotifySchema.parse>[] = [];
+    const pr = await fetch("https://api.spotify.com/v1/me/playlists?limit=50", { headers: { Authorization: `Bearer ${token.access_token}` } });
+    if (pr.ok) {
+      const pj = await pr.json() as { items?: ({ id: string; name: string; images?: { url: string; width?: number }[] | null; tracks?: { total?: number } } | null)[] };
+      playlists = (pj.items ?? []).filter((p): p is NonNullable<typeof p> => !!p && /^[A-Za-z0-9]{22}$/.test(p.id) && !!p.name?.trim())
+        .map((p) => playlistSpotifySchema.parse({ spotify_id: p.id, nombre: p.name, imagen_url: imagenMiniatura(p.images), total_canciones: p.tracks?.total ?? null }));
+    } else console.error(`Spotify playlists [${pr.status}]: ${await pr.text()}`);
+    return { artistas, playlists };
   });

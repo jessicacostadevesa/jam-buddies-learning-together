@@ -584,18 +584,21 @@ export type Database = {
       perfil_spotify_artistas: {
         Row: {
           ejemplo: boolean
+          imagen_url: string | null
           nombre: string
           perfil_id: string
           spotify_id: string
         }
         Insert: {
           ejemplo?: boolean
+          imagen_url?: string | null
           nombre: string
           perfil_id: string
           spotify_id: string
         }
         Update: {
           ejemplo?: boolean
+          imagen_url?: string | null
           nombre?: string
           perfil_id?: string
           spotify_id?: string
@@ -603,6 +606,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "perfil_spotify_artistas_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      perfil_spotify_playlists: {
+        Row: {
+          ejemplo: boolean
+          imagen_url: string | null
+          nombre: string
+          perfil_id: string
+          spotify_id: string
+          total_canciones: number | null
+        }
+        Insert: {
+          ejemplo?: boolean
+          imagen_url?: string | null
+          nombre: string
+          perfil_id: string
+          spotify_id: string
+          total_canciones?: number | null
+        }
+        Update: {
+          ejemplo?: boolean
+          imagen_url?: string | null
+          nombre?: string
+          perfil_id?: string
+          spotify_id?: string
+          total_canciones?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "perfil_spotify_playlists_perfil_id_fkey"
             columns: ["perfil_id"]
             isOneToOne: false
             referencedRelation: "perfiles"
@@ -828,6 +866,7 @@ export type Database = {
         Args: never
         Returns: {
           anios: number
+          artistas: Json
           bio: string
           ciudad: string
           esEscuela: boolean
@@ -837,6 +876,7 @@ export type Database = {
           modalidades: Database["public"]["Enums"]["modalidad_clase"][]
           niveles: Database["public"]["Enums"]["nivel_musical"][]
           nombre: string
+          playlists: Json
           precio: number
           titular: string
           verificado: boolean

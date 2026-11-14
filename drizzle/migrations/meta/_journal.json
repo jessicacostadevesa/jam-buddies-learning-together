@@ -64,6 +64,13 @@
       "when": 1794651095031,
       "tag": "0008_restrict_spotify_table_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794652305390,
+      "tag": "0009_spotify_fotos_playlists",
+      "breakpoints": true
     }
   ]
 }

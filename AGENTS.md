@@ -31,4 +31,4 @@ use the editor.
 
 - Musician profile data lives in `perfiles` + join tables (perfil_instrumentos, perfil_estilos, disponibilidad); roles in `user_roles` set by signup trigger from metadata `rol`. Why: one profile feeds all features and roles must not be user-editable.
 - Role-specific profile data lives in owner-only 1:1 tables keyed by perfil_id; fiscal data and verification evidence allow owner/admin reads. Public teacher cards use only the column-allowlisted directorio_profes_publico RPC. Why: directory discovery must not grant direct access to private profile records.
-- Spotify uses optional PKCE consent and one-time server-bound state; persist only explicitly selected artists under owner RLS, never Spotify tokens or listening history. Why: users control their selection without exposing account access.
+- Spotify uses optional PKCE consent and one-time server-bound state; persist only explicitly selected artists and playlists under owner RLS (shown publicly only via the directory RPC allowlist), never Spotify tokens or listening history. Why: users control their selection without exposing account access.
