@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { listarLocales } from "@/lib/locales.functions";
 import { distanciaKm } from "@/lib/distancia";
+import { ReservarDialog } from "@/components/ReservarDialog";
 
 const localesQuery = queryOptions({ queryKey: ["locales-mapa"], queryFn: () => listarLocales() });
 type Local = Awaited<ReturnType<typeof listarLocales>>[number];
@@ -134,7 +135,8 @@ function LocalesPage() {
           <aside className="space-y-3 lg:max-h-[520px] lg:overflow-y-auto">
             {lista.length === 0 && <p className="text-muted-foreground">Aún no hay locales en el mapa.</p>}
             {lista.map(({ l, d }) => (
-              <button key={l.id} type="button" onClick={() => abrir(l)} className="card-pop block w-full p-4 text-left">
+              <div key={l.id} className="card-pop p-4">
+              <button type="button" onClick={() => abrir(l)} className="block w-full text-left">
                 <div className="flex items-start justify-between gap-2">
                   <h2 className="font-bold">{l.nombre || "Local"}</h2>
                   {d != null && <span className="shrink-0 rounded-full border-2 border-ink bg-secondary px-2 text-xs font-semibold">{d.toFixed(1)} km</span>}
@@ -146,6 +148,8 @@ function LocalesPage() {
                   {l.conciertos && <span className="rounded-full border-2 border-ink bg-primary px-2 text-xs font-semibold text-primary-foreground">Conciertos</span>}
                 </div>
               </button>
+              <div className="mt-3"><ReservarDialog anfitrionId={l.id} nombre={l.nombre} precio={l.precio} tipo="ensayo" /></div>
+              </div>
             ))}
           </aside>
         </div>

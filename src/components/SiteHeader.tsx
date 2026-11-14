@@ -31,6 +31,7 @@ export function SiteHeader() {
         <Button asChild variant="ghost" size="sm"><Link to="/locales">Locales</Link></Button>
         {signedIn ? (
           <div className="flex items-center gap-2">
+            {!admin?.allowed && <Button asChild variant="ghost" size="sm"><Link to="/reservas">Reservas</Link></Button>}
             <Button asChild variant="ink" size="sm">{admin?.allowed ? <Link to="/admin">Administración</Link> : <Link to="/perfil">Mi perfil</Link>}</Button>
             <Button variant="ghost" size="sm" onClick={signOut}>Salir</Button>
           </div>

@@ -92,6 +92,13 @@
       "when": 1794654630977,
       "tag": "0012_restrict_role_queries_and_private_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794657386838,
+      "tag": "0013_reservas_con_pago",
+      "breakpoints": true
     }
   ]
 }

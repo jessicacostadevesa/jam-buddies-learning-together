@@ -846,6 +846,81 @@ export type Database = {
           },
         ]
       }
+      reservas: {
+        Row: {
+          alumno_id: string
+          alumno_nombre: string
+          anfitrion_id: string
+          anfitrion_nombre: string
+          created_at: string
+          environment: string | null
+          estado: Database["public"]["Enums"]["estado_reserva"]
+          horas: number
+          id: string
+          importe: number
+          inicio: string
+          mensaje: string | null
+          motivo_rechazo: string | null
+          pagada_at: string | null
+          stripe_session_id: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          alumno_id: string
+          alumno_nombre: string
+          anfitrion_id: string
+          anfitrion_nombre: string
+          created_at?: string
+          environment?: string | null
+          estado?: Database["public"]["Enums"]["estado_reserva"]
+          horas: number
+          id?: string
+          importe: number
+          inicio: string
+          mensaje?: string | null
+          motivo_rechazo?: string | null
+          pagada_at?: string | null
+          stripe_session_id?: string | null
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          alumno_id?: string
+          alumno_nombre?: string
+          anfitrion_id?: string
+          anfitrion_nombre?: string
+          created_at?: string
+          environment?: string | null
+          estado?: Database["public"]["Enums"]["estado_reserva"]
+          horas?: number
+          id?: string
+          importe?: number
+          inicio?: string
+          mensaje?: string | null
+          motivo_rechazo?: string | null
+          pagada_at?: string | null
+          stripe_session_id?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_alumno_id_fkey"
+            columns: ["alumno_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservas_anfitrion_id_fkey"
+            columns: ["anfitrion_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       spotify_oauth_sessions: {
         Row: {
           expires_at: string
@@ -901,6 +976,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      cancelar_reserva: { Args: { _id: string }; Returns: undefined }
       current_account_active: { Args: never; Returns: boolean }
       directorio_locales_publico: {
         Args: never
@@ -944,6 +1020,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      responder_reserva: {
+        Args: { _aceptar: boolean; _id: string; _motivo: string }
+        Returns: undefined
+      }
+      solicitar_reserva: {
+        Args: {
+          _anfitrion: string
+          _horas: number
+          _inicio: string
+          _mensaje: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "alumno" | "profesor" | "local" | "admin"
@@ -955,6 +1044,12 @@ export type Database = {
         | "viernes"
         | "sabado"
         | "domingo"
+      estado_reserva:
+        | "pendiente_aceptacion"
+        | "pendiente_pago"
+        | "confirmada"
+        | "rechazada"
+        | "cancelada"
       formato_clase: "individual" | "grupal" | "banda"
       franja_horaria: "manana" | "tarde" | "noche"
       modalidad_clase: "presencial" | "online" | "domicilio"
@@ -1097,6 +1192,13 @@ export const Constants = {
         "viernes",
         "sabado",
         "domingo",
+      ],
+      estado_reserva: [
+        "pendiente_aceptacion",
+        "pendiente_pago",
+        "confirmada",
+        "rechazada",
+        "cancelada",
       ],
       formato_clase: ["individual", "grupal", "banda"],
       franja_horaria: ["manana", "tarde", "noche"],

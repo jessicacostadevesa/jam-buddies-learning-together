@@ -5,6 +5,7 @@ import { BadgeCheck, ListMusic, MapPin, Music2, Search } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Input } from "@/components/ui/input";
 import { listarProfes } from "@/lib/profes.functions";
+import { ReservarDialog } from "@/components/ReservarDialog";
 
 const profesQuery = queryOptions({ queryKey: ["profes"], queryFn: () => listarProfes() });
 
@@ -110,6 +111,7 @@ function ProfesPage() {
                 {p.niveles.length > 0 && <span>{p.niveles.map((n) => NIVEL[n]).join(" · ")}</span>}
                 {p.modalidades.length > 0 && <span>{p.modalidades.map((m) => MOD[m]).join(" · ")}</span>}
               </div>
+              <div className="mt-4"><ReservarDialog anfitrionId={p.id} nombre={p.nombre} precio={p.precio} tipo="clase" /></div>
               <SpotifyPie artistas={(p.artistas ?? []) as ArtistaPub[]} playlists={(p.playlists ?? []) as ListaPub[]} />
             </article>
           ))}
