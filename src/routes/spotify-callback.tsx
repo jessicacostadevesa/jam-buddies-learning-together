@@ -3,9 +3,9 @@ import { useEffect } from "react";
 
 export const Route = createFileRoute("/spotify-callback")({
   head: () => ({ meta: [
-    { title: "Conexión de Spotify — Tocamos" },
+    { title: "Conexión de Spotify — ¿tocamos?" },
     { name: "description", content: "Confirmación de tu conexión voluntaria con Spotify." },
-    { property: "og:title", content: "Conexión de Spotify — Tocamos" },
+    { property: "og:title", content: "Conexión de Spotify — ¿tocamos?" },
     { property: "og:description", content: "Selecciona los artistas que quieres añadir a tu perfil." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }), component: Callback,

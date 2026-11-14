@@ -20,9 +20,9 @@ export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ rol: z.enum(["alumno", "profesor", "local"]).optional() }),
   head: () => ({
     meta: [
-      { title: "Entrar — Tocamos" },
-      { name: "description", content: "Entra o crea tu perfil de músico, profe o local en Tocamos." },
-      { property: "og:title", content: "Entrar — Tocamos" },
+      { title: "Entrar — ¿tocamos?" },
+      { name: "description", content: "Entra o crea tu perfil de músico, profe o local en ¿tocamos?." },
+      { property: "og:title", content: "Entrar — ¿tocamos?" },
       { property: "og:description", content: "Crea tu perfil de músico, profe o local." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

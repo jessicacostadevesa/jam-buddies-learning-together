@@ -83,9 +83,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Tocamos — Aprende tocando, forma tu banda" },
+      { title: "¿tocamos? — Aprende tocando, forma tu banda" },
       { name: "description", content: "Encuentra profes, banda y locales para tocar música en directo." },
-      { property: "og:title", content: "Tocamos" },
+      { property: "og:title", content: "¿tocamos?" },
       { property: "og:description", content: "Encuentra profes, banda y locales para tocar música en directo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

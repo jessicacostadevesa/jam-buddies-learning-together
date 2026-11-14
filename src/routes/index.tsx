@@ -7,9 +7,9 @@ import hero from "@/assets/hero-jam.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tocamos — Aprende tocando, forma tu banda y sube al escenario" },
+      { title: "¿tocamos? — Aprende tocando, forma tu banda y sube al escenario" },
       { name: "description", content: "Profes y escuelas verificados que enseñan tocando, match para formar banda y mapa de locales para ensayar y tocar." },
-      { property: "og:title", content: "Tocamos — Aprende tocando y forma tu banda" },
+      { property: "og:title", content: "¿tocamos? — Aprende tocando y forma tu banda" },
       { property: "og:description", content: "Profes verificados, compañeros de banda afines y locales para ensayar y tocar en directo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

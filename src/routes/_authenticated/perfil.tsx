@@ -54,9 +54,9 @@ const perfilQuery = (uid: string) =>
 export const Route = createFileRoute("/_authenticated/perfil")({
   head: () => ({
     meta: [
-      { title: "Mi perfil de músico — Tocamos" },
+      { title: "Mi perfil de músico — ¿tocamos?" },
       { name: "description", content: "Tu instrumento, nivel, gustos, zona y disponibilidad." },
-      { property: "og:title", content: "Mi perfil — Tocamos" },
+      { property: "og:title", content: "Mi perfil — ¿tocamos?" },
       { property: "og:description", content: "Tu perfil único de músico." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

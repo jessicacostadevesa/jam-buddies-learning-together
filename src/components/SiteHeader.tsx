@@ -16,7 +16,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Link to="/" className="flex items-center gap-2 font-display text-2xl font-extrabold">
           <span className="inline-block h-6 w-6 rounded-full border-2 border-ink bg-primary" />
-          tocamos
+          ¿tocamos?
         </Link>
         <nav className="flex items-center gap-2">
         <Button asChild variant="ghost" size="sm"><Link to="/profes">Profes</Link></Button>

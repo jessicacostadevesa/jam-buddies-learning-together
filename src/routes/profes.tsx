@@ -14,9 +14,9 @@ const MOD: Record<string, string> = { presencial: "En aula", domicilio: "A domic
 export const Route = createFileRoute("/profes")({
   head: () => ({
     meta: [
-      { title: "Profes y escuelas — Tocamos" },
+      { title: "Profes y escuelas — ¿tocamos?" },
       { name: "description", content: "Encuentra profes y escuelas que enseñan tocando: instrumento, estilo, zona y precio." },
-      { property: "og:title", content: "Profes y escuelas que enseñan tocando — Tocamos" },
+      { property: "og:title", content: "Profes y escuelas que enseñan tocando — ¿tocamos?" },
       { property: "og:description", content: "Busca profe por instrumento, estilo y zona." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

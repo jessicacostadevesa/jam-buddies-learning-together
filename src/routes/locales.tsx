@@ -13,9 +13,9 @@ type Local = Awaited<ReturnType<typeof listarLocales>>[number];
 export const Route = createFileRoute("/locales")({
   head: () => ({
     meta: [
-      { title: "Mapa de locales para ensayar y tocar — Tocamos" },
+      { title: "Mapa de locales para ensayar y tocar — ¿tocamos?" },
       { name: "description", content: "Locales de ensayo, bares y salas con jams y conciertos para bandas que empiezan." },
-      { property: "og:title", content: "Mapa de locales para ensayar y tocar — Tocamos" },
+      { property: "og:title", content: "Mapa de locales para ensayar y tocar — ¿tocamos?" },
       { property: "og:description", content: "Encuentra dónde ensayar y dónde tocar en directo cerca de ti." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
