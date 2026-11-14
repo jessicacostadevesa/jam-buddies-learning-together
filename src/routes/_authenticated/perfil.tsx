@@ -14,6 +14,7 @@ import { ProfePerfil, profeQuery } from "@/components/perfil/ProfePerfil";
 import { escuelaQuery } from "@/components/perfil/EscuelaSecciones";
 import { AlumnoExtra, alumnoQuery } from "@/components/perfil/AlumnoExtra";
 import { LocalPerfil, localQuery } from "@/components/perfil/LocalPerfil";
+import { SpotifyGustos, spotifyQuery } from "@/components/perfil/SpotifyGustos";
 
 type Nivel = Database["public"]["Enums"]["nivel_musical"];
 type Dia = Database["public"]["Enums"]["dia_semana"];
@@ -63,6 +64,7 @@ export const Route = createFileRoute("/_authenticated/perfil")({
   }),
   loader: async ({ context }) => {
     const d = await context.queryClient.ensureQueryData(perfilQuery(context.user.id));
+    if (d.roles.includes("profesor") || d.roles.includes("alumno")) await context.queryClient.ensureQueryData(spotifyQuery(context.user.id));
     if (d.roles.includes("profesor")) await Promise.all([
       context.queryClient.ensureQueryData(profeQuery(context.user.id)),
       context.queryClient.ensureQueryData(escuelaQuery(context.user.id)),
@@ -139,6 +141,7 @@ function PerfilPage() {
         <main className="mx-auto max-w-3xl space-y-6 px-5 py-10">
           <ProfePerfil uid={uid} perfil={data.perfil} instrumentos={data.instrumentos} estilos={data.estilos}
             misInstrumentos={data.misInstrumentos} misEstilos={data.misEstilos} refreshBase={refresh} />
+          <SpotifyGustos uid={uid} />
         </main>
       </div>
     );
@@ -240,6 +243,7 @@ function PerfilPage() {
             </table>
           </div>
         </Section>
+        <SpotifyGustos uid={uid} />
       </main>
     </div>
   );

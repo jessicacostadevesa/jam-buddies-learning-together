@@ -581,6 +581,35 @@ export type Database = {
           },
         ]
       }
+      perfil_spotify_artistas: {
+        Row: {
+          ejemplo: boolean
+          nombre: string
+          perfil_id: string
+          spotify_id: string
+        }
+        Insert: {
+          ejemplo?: boolean
+          nombre: string
+          perfil_id: string
+          spotify_id: string
+        }
+        Update: {
+          ejemplo?: boolean
+          nombre?: string
+          perfil_id?: string
+          spotify_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "perfil_spotify_artistas_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       perfiles: {
         Row: {
           bio: string | null
@@ -733,6 +762,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      spotify_oauth_sessions: {
+        Row: {
+          expires_at: string
+          redirect_uri: string
+          state_hash: string
+          user_id: string
+          verifier: string
+        }
+        Insert: {
+          expires_at: string
+          redirect_uri: string
+          state_hash: string
+          user_id: string
+          verifier: string
+        }
+        Update: {
+          expires_at?: string
+          redirect_uri?: string
+          state_hash?: string
+          user_id?: string
+          verifier?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {

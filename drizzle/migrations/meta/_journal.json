@@ -50,6 +50,20 @@
       "when": 1794598978144,
       "tag": "0006_mapa_locales",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794651021250,
+      "tag": "0007_spotify_artist_selection",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794651095031,
+      "tag": "0008_restrict_spotify_table_grants",
+      "breakpoints": true
     }
   ]
 }

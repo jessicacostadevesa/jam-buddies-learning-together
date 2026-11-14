@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LocalesRouteImport } from './routes/locales'
 import { Route as ProfesRouteImport } from './routes/profes'
+import { Route as SpotifyCallbackRouteImport } from './routes/spotify-callback'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 
 const IndexRoute = IndexRouteImport.update({
@@ -40,6 +41,11 @@ const ProfesRoute = ProfesRouteImport.update({
   path: '/profes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SpotifyCallbackRoute = SpotifyCallbackRouteImport.update({
+  id: '/spotify-callback',
+  path: '/spotify-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/locales': typeof LocalesRoute
   '/profes': typeof ProfesRoute
+  '/spotify-callback': typeof SpotifyCallbackRoute
   '/perfil': typeof AuthenticatedPerfilRoute
 }
 export interface FileRoutesByTo {
@@ -58,6 +65,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/locales': typeof LocalesRoute
   '/profes': typeof ProfesRoute
+  '/spotify-callback': typeof SpotifyCallbackRoute
   '/perfil': typeof AuthenticatedPerfilRoute
 }
 export interface FileRoutesById {
@@ -67,13 +75,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/locales': typeof LocalesRoute
   '/profes': typeof ProfesRoute
+  '/spotify-callback': typeof SpotifyCallbackRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/locales' | '/profes' | '/perfil'
+  fullPaths:
+    '/' | '/auth' | '/locales' | '/profes' | '/spotify-callback' | '/perfil'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/locales' | '/profes' | '/perfil'
+  to: '/' | '/auth' | '/locales' | '/profes' | '/spotify-callback' | '/perfil'
   id:
     | '__root__'
     | '/'
@@ -81,6 +91,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/locales'
     | '/profes'
+    | '/spotify-callback'
     | '/_authenticated/perfil'
   fileRoutesById: FileRoutesById
 }
@@ -90,6 +101,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   LocalesRoute: typeof LocalesRoute
   ProfesRoute: typeof ProfesRoute
+  SpotifyCallbackRoute: typeof SpotifyCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -129,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/spotify-callback': {
+      id: '/spotify-callback'
+      path: '/spotify-callback'
+      fullPath: '/spotify-callback'
+      preLoaderRoute: typeof SpotifyCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/perfil': {
       id: '/_authenticated/perfil'
       path: '/perfil'
@@ -156,6 +175,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   LocalesRoute: LocalesRoute,
   ProfesRoute: ProfesRoute,
+  SpotifyCallbackRoute: SpotifyCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
