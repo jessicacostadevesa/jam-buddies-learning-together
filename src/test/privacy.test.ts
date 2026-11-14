@@ -6,6 +6,10 @@ function query(sql: string) {
 }
 
 describe("Live database privacy protections", () => {
+  it("keeps Spotify authorization state inaccessible to app users", () => {
+    const rows = query("SELECT has_table_privilege('anon','public.spotify_oauth_sessions','SELECT') AS anon_read, has_table_privilege('authenticated','public.spotify_oauth_sessions','SELECT') AS user_read");
+    expect(rows).toEqual([{ anon_read: false, user_read: false }]);
+  }, 60000);
   it("scopes every private read policy to the owner (or authorized fiscal/evidence reviewer)", () => {
     const rows = query(`SELECT tablename, cmd, qual, roles::text FROM pg_policies WHERE schemaname='public' AND tablename NOT IN ('estilos','instrumentos') AND cmd IN ('SELECT','ALL')`);
     expect(rows.length).toBeGreaterThanOrEqual(16);
