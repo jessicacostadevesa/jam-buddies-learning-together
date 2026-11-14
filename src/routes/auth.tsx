@@ -8,6 +8,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useServerFn } from "@tanstack/react-start";
+import { adminAccess } from "@/lib/admin.functions";
 
 const roles = [
   { id: "alumno", label: "Alumno / músico" },
@@ -34,6 +36,11 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const checkAdmin = useServerFn(adminAccess);
+  async function goToAccount() {
+    const access = await checkAdmin();
+    navigate({ to: access.allowed ? "/admin" : "/perfil" });
+  }
   const [mode, setMode] = useState<"login" | "signup">(search.rol ? "signup" : "login");
   const [rol, setRol] = useState<Rol>(search.rol ?? "alumno");
   const [nombre, setNombre] = useState("");
@@ -57,7 +64,7 @@ function AuthPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
       if (error) { toast.error("Email o contraseña incorrectos"); return; }
-      navigate({ to: "/perfil" });
+      await goToAccount();
     }
   }
 
@@ -65,7 +72,7 @@ function AuthPage() {
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (r.error) { toast.error("No se pudo entrar con Google"); return; }
     if (r.redirected) return;
-    navigate({ to: "/perfil" });
+    await goToAccount();
   }
 
   return (

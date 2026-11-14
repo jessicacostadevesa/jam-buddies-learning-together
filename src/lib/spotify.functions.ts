@@ -31,6 +31,8 @@ export const consultarArtistasSpotify = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i) => z.object({ code: z.string().min(1).max(2000), state: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
+    const { data: roles, error: roleError } = await context.supabase.from("user_roles").select("role");
+    if (roleError || !roles?.some(r => r.role === "alumno" || r.role === "profesor")) throw new Error("Solo disponible para alumnos y profes con cuenta activa");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: session, error } = await supabaseAdmin.from("spotify_oauth_sessions").delete().eq("state_hash", await hash(data.state)).eq("user_id", context.userId).select("verifier, redirect_uri, expires_at").maybeSingle();
     if (error || !session || !oauthVigente(session.expires_at, Date.now())) throw new Error("La conexión ha caducado. Vuelve a conectar Spotify");

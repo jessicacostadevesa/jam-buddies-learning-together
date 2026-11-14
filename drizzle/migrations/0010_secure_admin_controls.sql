@@ -1,0 +1,21 @@
+CREATE TABLE public.admin_account_status (user_id uuid PRIMARY KEY, suspended boolean NOT NULL DEFAULT false, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.admin_account_status TO service_role;
+ALTER TABLE public.admin_account_status ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.admin_audit (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), actor_id uuid NOT NULL, target_id uuid NOT NULL, action text NOT NULL, detail text, created_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.admin_audit TO service_role;
+ALTER TABLE public.admin_audit ENABLE ROW LEVEL SECURITY;
+CREATE FUNCTION public.current_account_active() RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $$ SELECT EXISTS(SELECT 1 FROM public.perfiles WHERE id=auth.uid()) AND NOT EXISTS(SELECT 1 FROM public.admin_account_status WHERE user_id=auth.uid() AND suspended); $$;
+REVOKE ALL ON FUNCTION public.current_account_active() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.current_account_active() TO authenticated, service_role;
+DO $$ DECLARE t text; BEGIN FOR t IN SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename NOT IN ('estilos','instrumentos','admin_account_status','admin_audit','spotify_oauth_sessions') LOOP EXECUTE format('CREATE POLICY "Active account required" ON public.%I AS RESTRICTIVE FOR ALL TO authenticated USING (public.current_account_active()) WITH CHECK (public.current_account_active())',t); END LOOP; END $$;
+CREATE POLICY "Active account evidence access" ON storage.objects AS RESTRICTIVE FOR ALL TO authenticated USING (bucket_id <> 'evidencias' OR public.current_account_active()) WITH CHECK (bucket_id <> 'evidencias' OR public.current_account_active());
+CREATE FUNCTION public.admin_set_role(actor uuid, target uuid, new_role public.app_role) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$ BEGIN
+PERFORM pg_advisory_xact_lock(71928345);
+IF actor=target OR NOT public.has_role(actor,'admin') OR EXISTS(SELECT 1 FROM public.admin_account_status WHERE user_id=actor AND suspended) THEN RAISE EXCEPTION 'Forbidden'; END IF;
+IF NOT EXISTS(SELECT 1 FROM public.perfiles WHERE id=target) THEN RAISE EXCEPTION 'Unknown account'; END IF;
+DELETE FROM public.user_roles WHERE user_id=target;
+INSERT INTO public.user_roles(user_id,role) VALUES(target,new_role);
+INSERT INTO public.admin_audit(actor_id,target_id,action,detail) VALUES(actor,target,'role',new_role::text);
+END $$;
+REVOKE ALL ON FUNCTION public.admin_set_role(uuid,uuid,public.app_role) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_set_role(uuid,uuid,public.app_role) TO service_role;

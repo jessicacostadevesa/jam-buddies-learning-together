@@ -11,7 +11,7 @@ describe("Live database privacy protections", () => {
     expect(rows).toEqual([{ anon_read: false, user_read: false }]);
   }, 60000);
   it("scopes every private read policy to the owner (or authorized fiscal/evidence reviewer)", () => {
-    const rows = query(`SELECT tablename, cmd, qual, roles::text FROM pg_policies WHERE schemaname='public' AND tablename NOT IN ('estilos','instrumentos') AND cmd IN ('SELECT','ALL')`);
+    const rows = query(`SELECT tablename, cmd, qual, roles::text FROM pg_policies WHERE schemaname='public' AND permissive='PERMISSIVE' AND tablename NOT IN ('estilos','instrumentos') AND cmd IN ('SELECT','ALL')`);
     expect(rows.length).toBeGreaterThanOrEqual(16);
     for (const row of rows) {
       expect(row["roles"]).toBe("{authenticated}");
@@ -33,7 +33,15 @@ describe("Live database privacy protections", () => {
     const rows = query("SELECT proargnames FROM pg_proc WHERE oid='public.directorio_profes_publico()'::regprocedure");
     expect(rows.length).toBe(1);
     for (const row of rows) {
-      expect((row["proargnames"] as string[]).sort()).toEqual(["id","nombre","ciudad","zona","bio","titular","anios","niveles","modalidades","precio","instrumentos","estilos","verificado","esEscuela"].sort());
+      expect((row["proargnames"] as string[]).sort()).toEqual(["id","nombre","ciudad","zona","bio","titular","anios","niveles","modalidades","precio","instrumentos","estilos","verificado","esEscuela","artistas","playlists"].sort());
     }
+  }, 60000);
+  it("restricts role checks to the caller or privileged service", () => {
+    const rows = query("SELECT pg_get_functiondef('public.has_role(uuid,public.app_role)'::regprocedure) AS body");
+    expect(String(rows[0]?.["body"])).toContain("_user_id=auth.uid()");
+  }, 60000);
+  it("requires active accounts even with existing sessions", () => {
+    const rows = query("SELECT count(*)::int AS protected FROM pg_policies WHERE schemaname='public' AND policyname='Active account required' AND permissive='RESTRICTIVE'");
+    expect(Number(rows[0]?.["protected"])).toBe(19);
   }, 60000);
 });

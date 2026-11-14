@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_account_status: {
+        Row: {
+          suspended: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          suspended?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          suspended?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      admin_audit: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          detail: string | null
+          id: string
+          target_id: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          target_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          target_id?: string
+        }
+        Relationships: []
+      }
       alumno_detalles: {
         Row: {
           busca: string[]
@@ -848,6 +893,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_set_role: {
+        Args: {
+          actor: string
+          new_role: Database["public"]["Enums"]["app_role"]
+          target: string
+        }
+        Returns: undefined
+      }
+      current_account_active: { Args: never; Returns: boolean }
       directorio_locales_publico: {
         Args: never
         Returns: {
