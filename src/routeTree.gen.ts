@@ -12,12 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ExplorarRouteImport } from './routes/explorar'
 import { Route as LocalesRouteImport } from './routes/locales'
+import { Route as ParaProfesRouteImport } from './routes/para-profes'
 import { Route as ProfesRouteImport } from './routes/profes'
 import { Route as SpotifyCallbackRouteImport } from './routes/spotify-callback'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
+import { Route as ProfeIdRouteImport } from './routes/profe.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -34,9 +37,19 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExplorarRoute = ExplorarRouteImport.update({
+  id: '/explorar',
+  path: '/explorar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LocalesRoute = LocalesRouteImport.update({
   id: '/locales',
   path: '/locales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParaProfesRoute = ParaProfesRouteImport.update({
+  id: '/para-profes',
+  path: '/para-profes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfesRoute = ProfesRouteImport.update({
@@ -64,6 +77,11 @@ const AuthenticatedReservasRoute = AuthenticatedReservasRouteImport.update({
   path: '/reservas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ProfeIdRoute = ProfeIdRouteImport.update({
+  id: '/profe/$id',
+  path: '/profe/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -74,23 +92,29 @@ const ApiPublicPaymentsWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/explorar': typeof ExplorarRoute
   '/locales': typeof LocalesRoute
+  '/para-profes': typeof ParaProfesRoute
   '/profes': typeof ProfesRoute
   '/spotify-callback': typeof SpotifyCallbackRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRoute
+  '/profe/$id': typeof ProfeIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/explorar': typeof ExplorarRoute
   '/locales': typeof LocalesRoute
+  '/para-profes': typeof ParaProfesRoute
   '/profes': typeof ProfesRoute
   '/spotify-callback': typeof SpotifyCallbackRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRoute
+  '/profe/$id': typeof ProfeIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -98,12 +122,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/explorar': typeof ExplorarRoute
   '/locales': typeof LocalesRoute
+  '/para-profes': typeof ParaProfesRoute
   '/profes': typeof ProfesRoute
   '/spotify-callback': typeof SpotifyCallbackRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/reservas': typeof AuthenticatedReservasRoute
+  '/profe/$id': typeof ProfeIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -111,35 +138,44 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/explorar'
     | '/locales'
+    | '/para-profes'
     | '/profes'
     | '/spotify-callback'
     | '/admin'
     | '/perfil'
     | '/reservas'
+    | '/profe/$id'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/explorar'
     | '/locales'
+    | '/para-profes'
     | '/profes'
     | '/spotify-callback'
     | '/admin'
     | '/perfil'
     | '/reservas'
+    | '/profe/$id'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/explorar'
     | '/locales'
+    | '/para-profes'
     | '/profes'
     | '/spotify-callback'
     | '/_authenticated/admin'
     | '/_authenticated/perfil'
     | '/_authenticated/reservas'
+    | '/profe/$id'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -147,9 +183,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ExplorarRoute: typeof ExplorarRoute
   LocalesRoute: typeof LocalesRoute
+  ParaProfesRoute: typeof ParaProfesRoute
   ProfesRoute: typeof ProfesRoute
   SpotifyCallbackRoute: typeof SpotifyCallbackRoute
+  ProfeIdRoute: typeof ProfeIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -176,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explorar': {
+      id: '/explorar'
+      path: '/explorar'
+      fullPath: '/explorar'
+      preLoaderRoute: typeof ExplorarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/locales': {
       id: '/locales'
       path: '/locales'
       fullPath: '/locales'
       preLoaderRoute: typeof LocalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/para-profes': {
+      id: '/para-profes'
+      path: '/para-profes'
+      fullPath: '/para-profes'
+      preLoaderRoute: typeof ParaProfesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profes': {
@@ -218,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReservasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/profe/$id': {
+      id: '/profe/$id'
+      path: '/profe/$id'
+      fullPath: '/profe/$id'
+      preLoaderRoute: typeof ProfeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -247,9 +307,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ExplorarRoute: ExplorarRoute,
   LocalesRoute: LocalesRoute,
+  ParaProfesRoute: ParaProfesRoute,
   ProfesRoute: ProfesRoute,
   SpotifyCallbackRoute: SpotifyCallbackRoute,
+  ProfeIdRoute: ProfeIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

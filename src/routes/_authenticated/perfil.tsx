@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { CassetteStripes } from "@/components/Cassette";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -21,9 +22,25 @@ type Dia = Database["public"]["Enums"]["dia_semana"];
 type Franja = Database["public"]["Enums"]["franja_horaria"];
 
 const DIAS: Dia[] = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
-const DIA_LABEL: Record<Dia, string> = { lunes: "L", martes: "M", miercoles: "X", jueves: "J", viernes: "V", sabado: "S", domingo: "D" };
-const FRANJAS: { id: Franja; label: string }[] = [{ id: "manana", label: "Mañana" }, { id: "tarde", label: "Tarde" }, { id: "noche", label: "Noche" }];
-const NIVELES: { id: Nivel; label: string }[] = [{ id: "inicial", label: "Inicial" }, { id: "intermedio", label: "Intermedio" }, { id: "avanzado", label: "Avanzado" }];
+const DIA_LABEL: Record<Dia, string> = {
+  lunes: "L",
+  martes: "M",
+  miercoles: "X",
+  jueves: "J",
+  viernes: "V",
+  sabado: "S",
+  domingo: "D",
+};
+const FRANJAS: { id: Franja; label: string }[] = [
+  { id: "manana", label: "Mañana" },
+  { id: "tarde", label: "Tarde" },
+  { id: "noche", label: "Noche" },
+];
+const NIVELES: { id: Nivel; label: string }[] = [
+  { id: "inicial", label: "Inicial" },
+  { id: "intermedio", label: "Intermedio" },
+  { id: "avanzado", label: "Avanzado" },
+];
 
 const perfilQuery = (uid: string) =>
   queryOptions({
@@ -64,12 +81,15 @@ export const Route = createFileRoute("/_authenticated/perfil")({
   }),
   loader: async ({ context }) => {
     const d = await context.queryClient.ensureQueryData(perfilQuery(context.user.id));
-    if (d.roles.includes("profesor") || d.roles.includes("alumno")) await context.queryClient.ensureQueryData(spotifyQuery(context.user.id));
-    if (d.roles.includes("profesor")) await Promise.all([
-      context.queryClient.ensureQueryData(profeQuery(context.user.id)),
-      context.queryClient.ensureQueryData(escuelaQuery(context.user.id)),
-    ]);
-    else if (d.roles.includes("local")) await context.queryClient.ensureQueryData(localQuery(context.user.id));
+    if (d.roles.includes("profesor") || d.roles.includes("alumno"))
+      await context.queryClient.ensureQueryData(spotifyQuery(context.user.id));
+    if (d.roles.includes("profesor"))
+      await Promise.all([
+        context.queryClient.ensureQueryData(profeQuery(context.user.id)),
+        context.queryClient.ensureQueryData(escuelaQuery(context.user.id)),
+      ]);
+    else if (d.roles.includes("local"))
+      await context.queryClient.ensureQueryData(localQuery(context.user.id));
     else await context.queryClient.ensureQueryData(alumnoQuery(context.user.id));
   },
   component: PerfilPage,
@@ -77,7 +97,7 @@ export const Route = createFileRoute("/_authenticated/perfil")({
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="card-pop p-6">
+    <section className="cassette-surface p-6">
       <h2 className="text-xl font-bold">{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
@@ -102,16 +122,27 @@ function PerfilPage() {
 
   async function guardarDatos(e: React.FormEvent) {
     e.preventDefault();
-    const { error } = await supabase.from("perfiles").update({ ...form, updated_at: new Date().toISOString() }).eq("id", uid);
-    if (error) { toast.error("No se pudo guardar"); return; }
+    const { error } = await supabase
+      .from("perfiles")
+      .update({ ...form, updated_at: new Date().toISOString() })
+      .eq("id", uid);
+    if (error) {
+      toast.error("No se pudo guardar");
+      return;
+    }
     toast.success("Perfil guardado");
     refresh();
   }
 
   async function addInstrumento() {
     if (!nuevoInst) return;
-    const { error } = await supabase.from("perfil_instrumentos").insert({ perfil_id: uid, instrumento_id: Number(nuevoInst), nivel: nuevoNivel });
-    if (error) { toast.error("Ese instrumento ya está en tu perfil"); return; }
+    const { error } = await supabase
+      .from("perfil_instrumentos")
+      .insert({ perfil_id: uid, instrumento_id: Number(nuevoInst), nivel: nuevoNivel });
+    if (error) {
+      toast.error("Ese instrumento ya está en tu perfil");
+      return;
+    }
     setNuevoInst("");
     refresh();
   }
@@ -120,27 +151,43 @@ function PerfilPage() {
     refresh();
   }
   async function toggleEstilo(id: number) {
-    if (data.misEstilos.includes(id)) await supabase.from("perfil_estilos").delete().eq("perfil_id", uid).eq("estilo_id", id);
+    if (data.misEstilos.includes(id))
+      await supabase.from("perfil_estilos").delete().eq("perfil_id", uid).eq("estilo_id", id);
     else await supabase.from("perfil_estilos").insert({ perfil_id: uid, estilo_id: id });
     refresh();
   }
   async function toggleSlot(dia: Dia, franja: Franja) {
     const on = data.disponibilidad.some((d) => d.dia === dia && d.franja === franja);
-    if (on) await supabase.from("disponibilidad").delete().eq("perfil_id", uid).eq("dia", dia).eq("franja", franja);
+    if (on)
+      await supabase
+        .from("disponibilidad")
+        .delete()
+        .eq("perfil_id", uid)
+        .eq("dia", dia)
+        .eq("franja", franja);
     else await supabase.from("disponibilidad").insert({ perfil_id: uid, dia, franja });
     refresh();
   }
 
   const instName = (id: number) => data.instrumentos.find((i) => i.id === id)?.nombre ?? "";
-  const disponibles = data.instrumentos.filter((i) => !data.misInstrumentos.some((m) => m.instrumento_id === i.id));
+  const disponibles = data.instrumentos.filter(
+    (i) => !data.misInstrumentos.some((m) => m.instrumento_id === i.id),
+  );
 
   if (data.roles.includes("profesor")) {
     return (
       <div className="min-h-screen bg-background">
         <SiteHeader />
-        <main className="mx-auto max-w-3xl space-y-6 px-5 py-10">
-          <ProfePerfil uid={uid} perfil={data.perfil} instrumentos={data.instrumentos} estilos={data.estilos}
-            misInstrumentos={data.misInstrumentos} misEstilos={data.misEstilos} refreshBase={refresh} />
+        <main className="mx-auto max-w-3xl profile-sections space-y-6 px-5 py-10 pb-28">
+          <ProfePerfil
+            uid={uid}
+            perfil={data.perfil}
+            instrumentos={data.instrumentos}
+            estilos={data.estilos}
+            misInstrumentos={data.misInstrumentos}
+            misEstilos={data.misEstilos}
+            refreshBase={refresh}
+          />
           <SpotifyGustos uid={uid} />
         </main>
       </div>
@@ -151,8 +198,22 @@ function PerfilPage() {
     return (
       <div className="min-h-screen bg-background">
         <SiteHeader />
-        <main className="mx-auto max-w-3xl space-y-6 px-5 py-10">
-          <LocalPerfil uid={uid} perfil={data.perfil} estilos={data.estilos} misEstilos={data.misEstilos} refreshBase={refresh} />
+        <main className="mx-auto max-w-3xl profile-sections space-y-6 px-5 py-10 pb-28">
+          <Button asChild variant="link">
+            <Link
+              to="/explorar"
+              search={{ pista: "locales", instrumento: "", donde: data.perfil.ciudad ?? "" }}
+            >
+              Ver cómo te ven
+            </Link>
+          </Button>
+          <LocalPerfil
+            uid={uid}
+            perfil={data.perfil}
+            estilos={data.estilos}
+            misEstilos={data.misEstilos}
+            refreshBase={refresh}
+          />
         </main>
       </div>
     );
@@ -161,46 +222,147 @@ function PerfilPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="mx-auto max-w-3xl space-y-6 px-5 py-10">
+      <main className="mx-auto max-w-3xl profile-sections space-y-6 px-5 py-10 pb-28">
         <div>
           <div className="flex gap-2">
             {data.roles.map((r) => (
-              <span key={r} className="rounded-full border-2 border-ink bg-secondary px-3 py-0.5 text-sm font-semibold capitalize">{r}</span>
+              <span
+                key={r}
+                className="rounded-full border border-border bg-secondary px-3 py-0.5 text-sm font-semibold capitalize"
+              >
+                {r}
+              </span>
             ))}
           </div>
           <h1 className="mt-3 text-4xl font-extrabold">Tu perfil de músico</h1>
-          <p className="mt-1 text-muted-foreground">Cuéntanos qué tocas y qué buscas: así te recomendamos profes, compañeros de banda y locales que encajan contigo.</p>
+          <div
+            className="mt-5 overflow-hidden rounded-full"
+            role="progressbar"
+            aria-label="Perfil completado"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(
+              ([!!form.nombre, !!form.ciudad, !!form.bio, data.misInstrumentos.length > 0].filter(
+                Boolean,
+              ).length /
+                4) *
+                100,
+            )}
+          >
+            <div className="bg-muted">
+              <div
+                style={{
+                  width: `${([!!form.nombre, !!form.ciudad, !!form.bio, data.misInstrumentos.length > 0].filter(Boolean).length / 4) * 100}%`,
+                }}
+              >
+                <CassetteStripes />
+              </div>
+            </div>
+          </div>
+          <p className="mt-1 text-muted-foreground">
+            Cuéntanos qué tocas y qué buscas: así te recomendamos profes, compañeros de banda y
+            locales que encajan contigo.
+          </p>
         </div>
 
-        <Section title="Sobre ti">
-          <form onSubmit={guardarDatos} className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2"><Label htmlFor="n">Nombre</Label><Input id="n" className="mt-1" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} /></div>
-            <div><Label htmlFor="c">Ciudad</Label><Input id="c" className="mt-1" placeholder="Madrid" value={form.ciudad} onChange={(e) => setForm({ ...form, ciudad: e.target.value })} /></div>
-            <div><Label htmlFor="z">Zona</Label><Input id="z" className="mt-1" placeholder="Madrid sur" value={form.zona} onChange={(e) => setForm({ ...form, zona: e.target.value })} /></div>
-            <div className="sm:col-span-2"><Label htmlFor="b">Bio</Label><Textarea id="b" className="mt-1" placeholder="Qué te gusta tocar, tus grupos favoritos…" value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} /></div>
-            <div className="sm:col-span-2"><Button type="submit" variant="pop">Guardar</Button></div>
+        <Section title="A1 · Sobre ti">
+          <form id="student-profile" onSubmit={guardarDatos} className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <Label htmlFor="n">Nombre</Label>
+              <Input
+                id="n"
+                className="mt-1"
+                value={form.nombre}
+                onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="c">Ciudad</Label>
+              <Input
+                id="c"
+                className="mt-1"
+                placeholder="Madrid"
+                value={form.ciudad}
+                onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="z">Zona</Label>
+              <Input
+                id="z"
+                className="mt-1"
+                placeholder="Madrid sur"
+                value={form.zona}
+                onChange={(e) => setForm({ ...form, zona: e.target.value })}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Label htmlFor="b">Bio</Label>
+              <Textarea
+                id="b"
+                className="mt-1"
+                placeholder="Qué te gusta tocar, tus grupos favoritos…"
+                value={form.bio}
+                onChange={(e) => setForm({ ...form, bio: e.target.value })}
+              />
+            </div>
           </form>
         </Section>
 
-        <Section title="Instrumentos que tocas o quieres aprender">
+        <Section title="A2 · Lo que tocas">
           <div className="flex flex-wrap gap-2">
-            {data.misInstrumentos.length === 0 && <p className="text-sm text-muted-foreground">Añade el instrumento que tocas o quieres aprender.</p>}
+            {data.misInstrumentos.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                Añade el instrumento que tocas o quieres aprender.
+              </p>
+            )}
             {data.misInstrumentos.map((m) => (
-              <span key={m.id} className="inline-flex items-center gap-2 rounded-lg border-2 border-ink bg-card px-3 py-1.5 text-sm font-semibold">
-                {instName(m.instrumento_id)} · <span className="capitalize text-primary">{m.nivel}</span>
-                <button onClick={() => delInstrumento(m.id)} aria-label="Quitar"><X className="h-4 w-4" /></button>
+              <span
+                key={m.id}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-semibold"
+              >
+                {instName(m.instrumento_id)} ·{" "}
+                <span className="capitalize text-primary">{m.nivel}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => delInstrumento(m.id)}
+                  aria-label="Quitar"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </span>
             ))}
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            <select value={nuevoInst} onChange={(e) => setNuevoInst(e.target.value)} className="h-10 rounded-md border border-input bg-card px-3 text-sm">
+            <select
+              value={nuevoInst}
+              onChange={(e) => setNuevoInst(e.target.value)}
+              aria-label="Instrumento"
+              className="h-10 rounded-md border border-input bg-card px-3 text-sm"
+            >
               <option value="">Elige instrumento…</option>
-              {disponibles.map((i) => <option key={i.id} value={i.id}>{i.nombre}</option>)}
+              {disponibles.map((i) => (
+                <option key={i.id} value={i.id}>
+                  {i.nombre}
+                </option>
+              ))}
             </select>
-            <select value={nuevoNivel} onChange={(e) => setNuevoNivel(e.target.value as Nivel)} className="h-10 rounded-md border border-input bg-card px-3 text-sm">
-              {NIVELES.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}
+            <select
+              aria-label="Tu nivel"
+              value={nuevoNivel}
+              onChange={(e) => setNuevoNivel(e.target.value as Nivel)}
+              className="h-10 rounded-md border border-input bg-card px-3 text-sm"
+            >
+              {NIVELES.map((n) => (
+                <option key={n.id} value={n.id}>
+                  {n.label}
+                </option>
+              ))}
             </select>
-            <Button variant="ink" onClick={addInstrumento}>Añadir</Button>
+            <Button variant="ink" onClick={addInstrumento}>
+              Añadir
+            </Button>
           </div>
         </Section>
 
@@ -211,10 +373,15 @@ function PerfilPage() {
             {data.estilos.map((e) => {
               const on = data.misEstilos.includes(e.id);
               return (
-                <button key={e.id} onClick={() => toggleEstilo(e.id)}
-                  className={`rounded-full border-2 border-ink px-3 py-1 text-sm font-semibold transition-colors ${on ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted"}`}>
+                <Button
+                  variant="ghost"
+                  aria-pressed={on}
+                  key={e.id}
+                  onClick={() => toggleEstilo(e.id)}
+                  className={`rounded-full border border-border px-3 py-1 text-sm font-semibold transition-colors ${on ? "bg-teacher text-foreground" : "bg-muted hover:bg-border"}`}
+                >
                   {e.nombre}
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -223,7 +390,16 @@ function PerfilPage() {
         <Section title="Cuándo puedes tocar">
           <div className="overflow-x-auto">
             <table className="text-sm">
-              <thead><tr><th />{DIAS.map((d) => <th key={d} className="px-1 pb-2 font-bold">{DIA_LABEL[d]}</th>)}</tr></thead>
+              <thead>
+                <tr>
+                  <th />
+                  {DIAS.map((d) => (
+                    <th key={d} className="px-1 pb-2 font-bold">
+                      {DIA_LABEL[d]}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
               <tbody>
                 {FRANJAS.map((f) => (
                   <tr key={f.id}>
@@ -232,8 +408,14 @@ function PerfilPage() {
                       const on = data.disponibilidad.some((x) => x.dia === d && x.franja === f.id);
                       return (
                         <td key={d} className="p-1">
-                          <button onClick={() => toggleSlot(d, f.id)} aria-label={`${d} ${f.label}`}
-                            className={`h-9 w-9 rounded-md border-2 border-ink transition-colors ${on ? "bg-accent" : "bg-card hover:bg-muted"}`} />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-pressed={on}
+                            onClick={() => toggleSlot(d, f.id)}
+                            aria-label={`${d} ${f.label}`}
+                            className={`h-9 w-9 rounded-md border border-border transition-colors ${on ? "bg-accent" : "bg-card hover:bg-muted"}`}
+                          />
                         </td>
                       );
                     })}
@@ -244,6 +426,14 @@ function PerfilPage() {
           </div>
         </Section>
         <SpotifyGustos uid={uid} />
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background px-5 py-4">
+          <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
+            <span className="text-sm text-muted-foreground">Sobre ti</span>
+            <Button form="student-profile" type="submit" variant="primary">
+              Guardar cambios
+            </Button>
+          </div>
+        </div>
       </main>
     </div>
   );

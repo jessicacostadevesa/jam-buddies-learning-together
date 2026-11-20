@@ -1,7 +1,13 @@
 # Roadmap
+- [x] Mixtape fase 1: sistema de diseño y controles
+- [x] Mixtape fase 2: cabecera y pie
+- [x] Mixtape fase 3: inicio
+- [x] Mixtape fase 4: explorar y redirecciones
+- [x] Mixtape fase 5: ficha pública y petición de clase
+- [x] Mixtape fase 6: acceso, perfiles, reservas y página profesional
 - [x] Panel admin: usuarios, accesos, roles, verificación y registro de acciones
 - [x] Revisar RLS y protección de datos tras añadir administración
-- [ ] Asignar acceso al administrador (falta el email de la cuenta elegida)
+- [x] Acceso del administrador de prueba
 - [x] Selección voluntaria de artistas Spotify y ejemplos privados para alumno y profe de prueba
 - [ ] Comprobar conexión real con Spotify (Client ID guardado; falta prueba con cuenta real en la web publicada)
 - [x] Proteger datos privados y comprobar accesos entre usuarios
@@ -9,3 +15,7 @@
 - [x] Ficha de local
 - [x] Ficha de alumno
 - [x] Revisión/verificación de profes desde el panel de administración
+
+- [ ] Rediseño: mostrar horarios, fotos, clase de prueba y formatos de escuela cuando existan en la información pública (requiere un cambio autorizado fuera del alcance visual)
+- [ ] Verificar mapa en dominio autorizado por Google Maps (la vista previa local no está autorizada)
+- [ ] Revisar dos comprobaciones de privacidad previas al rediseño: permiso anónimo de tabla reservas bloqueado por RLS y recuento de políticas desactualizado (sin cambios de seguridad autorizados en esta fase)

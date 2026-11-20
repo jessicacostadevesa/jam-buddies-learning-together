@@ -64,9 +64,23 @@
   --color-chart-5: var(--chart-5);
   --color-ink: var(--ink);
   --color-ink-foreground: var(--ink-foreground);
-  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
-  --shadow-pop: var(--shadow-pop);
+  --font-display: "Shrikhand", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", cursive;
+  --shadow-cassette: var(--shadow-cassette);
+  --shadow-elevated: var(--shadow-elevated);
+  --color-primary-hover: var(--primary-hover);
+  --color-paper: var(--paper);
+  --color-coral: var(--coral);
+  --color-dotted: var(--dotted);
+  --color-teacher: var(--teacher);
+  --color-teacher-tint: var(--teacher-tint);
+  --color-school: var(--school);
+  --color-school-tint: var(--school-tint);
+  --color-band: var(--band);
+  --color-band-tint: var(--band-tint);
+  --color-venue: var(--venue);
+  --color-venue-tint: var(--venue-tint);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -78,62 +92,139 @@
 }
 
 :root {
-  --radius: 0.9rem;
-  --background: oklch(0.975 0.012 85);
-  --foreground: oklch(0.18 0.02 260);
-  --card: oklch(0.995 0.005 85);
-  --card-foreground: oklch(0.18 0.02 260);
-  --popover: oklch(0.995 0.005 85);
-  --popover-foreground: oklch(0.18 0.02 260);
-  --primary: oklch(0.66 0.21 35);
-  --primary-foreground: oklch(0.99 0.01 85);
-  --secondary: oklch(0.86 0.16 95);
-  --secondary-foreground: oklch(0.2 0.03 260);
-  --muted: oklch(0.93 0.015 85);
-  --muted-foreground: oklch(0.48 0.02 260);
-  --accent: oklch(0.62 0.13 200);
-  --accent-foreground: oklch(0.99 0.01 85);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.88 0.02 85);
-  --input: oklch(0.88 0.02 85);
-  --ring: oklch(0.66 0.21 35);
-  --ink: oklch(0.18 0.02 260);
-  --ink-foreground: oklch(0.97 0.012 85);
-  --chart-1: oklch(0.66 0.21 35);
-  --chart-2: oklch(0.62 0.13 200);
-  --chart-3: oklch(0.86 0.16 95);
-  --chart-4: oklch(0.55 0.15 150);
-  --chart-5: oklch(0.6 0.18 330);
-  --sidebar: oklch(0.975 0.012 85);
-  --sidebar-foreground: oklch(0.18 0.02 260);
-  --sidebar-primary: oklch(0.66 0.21 35);
-  --sidebar-primary-foreground: oklch(0.99 0.01 85);
-  --sidebar-accent: oklch(0.93 0.015 85);
-  --sidebar-accent-foreground: oklch(0.18 0.02 260);
-  --sidebar-border: oklch(0.88 0.02 85);
-  --sidebar-ring: oklch(0.66 0.21 35);
-  --shadow-pop: 4px 4px 0 0 var(--ink);
+  --radius: 1.25rem;
+  --background: oklch(0.971 0.024 77.5);
+  --foreground: oklch(0.254 0.048 325.2);
+  --muted-foreground: oklch(0.493 0.037 331.2);
+  --primary: oklch(0.537 0.162 35.7);
+  --primary-hover: oklch(0.475 0.143 35.9);
+  --primary-foreground: var(--background);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: var(--paper);
+  --popover-foreground: var(--foreground);
+  --muted: oklch(0.932 0.04 79.5);
+  --border: oklch(0.918 0.035 81.3);
+  --input: var(--border);
+  --dotted: oklch(0.874 0.048 80.8);
+  --paper: oklch(0.994 0.007 88.6);
+  --coral: oklch(0.67 0.168 40.3);
+  --teacher: oklch(0.806 0.145 78.4);
+  --teacher-tint: oklch(0.932 0.059 84.5);
+  --school: oklch(0.8 0.074 297.9);
+  --school-tint: oklch(0.935 0.025 301.1);
+  --band: oklch(0.782 0.107 4.1);
+  --band-tint: oklch(0.923 0.033 1.4);
+  --venue: oklch(0.77 0.059 145.7);
+  --venue-tint: oklch(0.927 0.022 145.4);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--venue-tint);
+  --accent-foreground: var(--foreground);
+  --destructive: var(--primary);
+  --destructive-foreground: var(--background);
+  --ring: var(--primary);
+  --ink: var(--foreground);
+  --ink-foreground: var(--background);
+  --chart-1: var(--teacher);
+  --chart-2: var(--school);
+  --chart-3: var(--band);
+  --chart-4: var(--venue);
+  --chart-5: var(--coral);
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--background);
+  --sidebar-accent: var(--muted);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+  --shadow-cassette: 0 3px 0 0 var(--foreground);
+  --shadow-elevated: 0 4px 0 0 var(--foreground), 0 18px 40px oklch(0.254 0.048 325.2 / 0.12);
 }
-
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--border);
   }
-
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background: var(--background);
+    color: var(--foreground);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+  select {
+    background: var(--paper);
+    border: 2px solid var(--input);
+    border-radius: 14px;
+    min-height: 52px;
   }
 }
-
-@layer base {
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+@utility cassette-surface {
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow-cassette);
 }
-
-@utility card-pop {
-  border: 2px solid var(--ink);
-  border-radius: var(--radius);
-  background-color: var(--card);
-  box-shadow: var(--shadow-pop);
+@utility page-width {
+  max-width: 74rem;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+@utility handwritten {
+  font-family: var(--font-hand);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.handwritten {
+  line-height: 1.25;
+}
+.cassette-stripes {
+  display: flex;
+  flex-direction: column;
+}
+.cassette-stripes span {
+  height: 9px;
+}
+.cassette-quote::before {
+  content: "“";
+  font-family: var(--font-display);
+  color: var(--primary);
+  font-size: 48px;
+  line-height: 1;
+  margin-right: 8px;
+}
+.profile-sections > section,
+.profile-sections section.cassette-surface {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  border-bottom: 1px dashed var(--dotted);
+  border-radius: 0;
+  padding-block: 24px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

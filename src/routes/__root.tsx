@@ -9,6 +9,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { SiteFooter } from "@/components/Cassette";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -84,9 +85,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "¿tocamos? — Aprende tocando, forma tu banda" },
-      { name: "description", content: "Encuentra profes, banda y locales para tocar música en directo." },
+      {
+        name: "description",
+        content: "Encuentra profes, banda y locales para tocar música en directo.",
+      },
       { property: "og:title", content: "¿tocamos?" },
-      { property: "og:description", content: "Encuentra profes, banda y locales para tocar música en directo." },
+      {
+        property: "og:description",
+        content: "Encuentra profes, banda y locales para tocar música en directo.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -101,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Shrikhand&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap",
       },
     ],
   }),
@@ -113,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <HeadContent />
       </head>
@@ -141,6 +148,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <SiteFooter />
       <Toaster />
     </QueryClientProvider>
   );
