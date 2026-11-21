@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { BadgeCheck, ChevronDown, ChevronUp, LocateFixed, MapPin, List, Map } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -147,9 +147,12 @@ function Explorar() {
     [opened, setOpened] = useState<string | null>(null);
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null),
     [status, setStatus] = useState("");
-  const track = search.pista;
+  const [pending, setPending] = useState<Track | null>(null);
+  useEffect(() => setPending(null), [search.pista]);
+  const track = pending ?? search.pista;
   const selectLocal = useCallback((id: string) => setOpened(id), []);
   const choose = (pista: Track) => {
+    setPending(pista);
     setNivel("");
     setModalidad("");
     setUso("");
