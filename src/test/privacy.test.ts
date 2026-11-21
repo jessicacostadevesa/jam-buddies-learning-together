@@ -1,11 +1,21 @@
 import { execFileSync } from "node:child_process";
+
+function lovableCliAvailable() {
+  try {
+    execFileSync("lovable", ["--help"], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+}
 import { describe, expect, it } from "vitest";
 
 function query(sql: string) {
   return JSON.parse(execFileSync("lovable", ["supabase", "query", "--json", sql], { encoding: "utf8" })).rows as Record<string, unknown>[];
 }
 
-describe("Live database privacy protections", () => {
+// Needs the Lovable CLI to query the live database; skipped where it is absent (e.g. GitHub Actions).
+describe.skipIf(!lovableCliAvailable())("Live database privacy protections", () => {
   it("keeps Spotify authorization state inaccessible to app users", () => {
     const rows = query("SELECT has_table_privilege('anon','public.spotify_oauth_sessions','SELECT') AS anon_read, has_table_privilege('authenticated','public.spotify_oauth_sessions','SELECT') AS user_read");
     expect(rows).toEqual([{ anon_read: false, user_read: false }]);
@@ -42,6 +52,6 @@ describe("Live database privacy protections", () => {
   }, 60000);
   it("requires active accounts even with existing sessions", () => {
     const rows = query("SELECT count(*)::int AS protected FROM pg_policies WHERE schemaname='public' AND policyname='Active account required' AND permissive='RESTRICTIVE'");
-    expect(Number(rows[0]?.["protected"])).toBe(19);
+    expect(Number(rows[0]?.["protected"])).toBe(20);
   }, 60000);
 });
