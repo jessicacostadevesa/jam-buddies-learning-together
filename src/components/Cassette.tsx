@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { adminAccess } from "@/lib/admin.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -140,6 +144,17 @@ export function CassetteCard({
 export function SiteFooter() {
   const path = useLocation({ select: (location) => location.pathname });
   const hasNote = path === "/" || path === "/explorar" || path === "/para-profes";
+  const access = useServerFn(adminAccess);
+  const { data: session } = useQuery({
+    queryKey: ["footer-session"],
+    queryFn: async () => (await supabase.auth.getSession()).data.session,
+  });
+  const { data: admin } = useQuery({
+    queryKey: ["admin-access", session?.user.id],
+    queryFn: () => access(),
+    enabled: !!session,
+    retry: false,
+  });
   return (
     <footer className="mt-14 border-t border-dotted py-8">
       <div className="page-width flex flex-wrap items-center justify-between gap-4">
@@ -150,6 +165,11 @@ export function SiteFooter() {
         <p className={hasNote ? "text-sm text-muted-foreground" : "font-hand text-2xl"}>
           hecho por y para músicos que empiezan
         </p>
+        {admin?.allowed && (
+          <Button asChild variant="link" className="text-sm">
+            <Link to="/admin">Administración</Link>
+          </Button>
+        )}
       </div>
     </footer>
   );
