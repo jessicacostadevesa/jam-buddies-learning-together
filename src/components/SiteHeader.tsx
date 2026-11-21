@@ -1,26 +1,17 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
-import { adminAccess } from "@/lib/admin.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { CassetteLogo } from "@/components/Cassette";
 
 export function SiteHeader() {
   const qc = useQueryClient(),
-    navigate = useNavigate(),
-    access = useServerFn(adminAccess);
+    navigate = useNavigate();
   const { data: session } = useQuery({
     queryKey: ["header-session"],
     queryFn: async () => (await supabase.auth.getSession()).data.session,
   });
   const signedIn = !!session;
-  const { data: admin } = useQuery({
-    queryKey: ["admin-access", session?.user.id],
-    queryFn: () => access(),
-    enabled: signedIn,
-    retry: false,
-  });
   const { data: account } = useQuery({
     queryKey: ["header-account", session?.user.id],
     enabled: signedIn,
@@ -80,37 +71,29 @@ export function SiteHeader() {
         <div className="flex flex-wrap items-center gap-3">
           {signedIn ? (
             <>
-              {admin?.allowed ? (
-                <Button asChild variant="secondary">
-                  <Link to="/admin">Administración</Link>
-                </Button>
-              ) : (
-                <>
-                  <Button asChild variant="link">
-                    <Link to="/reservas">
-                      {account?.professional
-                        ? `Solicitudes${account.pending ? ` · ${account.pending}` : ""}`
-                        : "Mis reservas"}
-                    </Link>
-                  </Button>
-                  <Button asChild variant="secondary">
-                    <Link to="/perfil">
-                      {account?.avatar ? (
-                        <img
-                          src={account.avatar}
-                          alt=""
-                          className="h-7 w-7 rounded-full object-cover"
-                        />
-                      ) : (
-                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teacher-tint text-xs">
-                          {account?.name.charAt(0) || "♪"}
-                        </span>
-                      )}
-                      {account?.professional ? "Mi ficha" : "Mi perfil"}
-                    </Link>
-                  </Button>
-                </>
-              )}
+              <Button asChild variant="link">
+                <Link to="/reservas">
+                  {account?.professional
+                    ? `Solicitudes${account.pending ? ` · ${account.pending}` : ""}`
+                    : "Mis reservas"}
+                </Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link to="/perfil">
+                  {account?.avatar ? (
+                    <img
+                      src={account.avatar}
+                      alt=""
+                      className="h-7 w-7 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teacher-tint text-xs">
+                      {account?.name.charAt(0) || "♪"}
+                    </span>
+                  )}
+                  {account?.professional ? "Mi ficha" : "Mi perfil"}
+                </Link>
+              </Button>
               <Button variant="ghost" size="sm" onClick={signOut}>
                 Salir
               </Button>
